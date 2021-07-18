@@ -25,7 +25,6 @@ bool trueChar(char c) {
 void clean(string &s) {
     string t, NONE;
     for (char c : s) {
-        // if (string(1, c) == "\u2019") break;
         if (c == -30) break;
         if (!trueChar(c))  { s = NONE; return; };
         c = towlower(c);

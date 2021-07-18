@@ -23,8 +23,7 @@ void importFile(TRIE &Trie, string folder, vector <string> &fileName, vector <ve
         ifstream inp(file.path());
         string s;
         vector <string> _fileData;
-        int loop = -1;
-        while (inp >> s && loop--) {
+        while (inp >> s) {
             clean(s);
             if (s.size()) {
                 Trie.insert(s, fileName.size()-1);
