@@ -1,6 +1,7 @@
 #ifndef TRIE_H
 #define TRIE_H
 
+#include <string>
 #include <cctype>
 #include <cassert>
 #include <unordered_map>
