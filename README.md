@@ -45,41 +45,41 @@ Cách tìm: Sau khi tìm được những file phù hợp bên trái và file ph
 
 - Cần viết các function chính sau: mỗi operator sẽ cho ra một unordered_map có key là id file và value là số lần xuất hiện, cần thực hiện:
 
-# unordered_map <int, int> merge (unordered_map <int, int> &A, unordered_map <int, int> &B)
+### unordered_map <int, int> merge (unordered_map <int, int> &A, unordered_map <int, int> &B)
 // Nhận vào A, B, đưa ra hợp của A và B, phép OR
 
-# unordered_map <int, int> intersect (unordered_map <int, int> &A, unordered_map <int, int> &B)
+### unordered_map <int, int> intersect (unordered_map <int, int> &A, unordered_map <int, int> &B)
 // Nhận vào A, B, đưa ra giao của A và B, phép AND
 
-# unordered_map <int, int> exact (unordered_map <int, int> &A, string &key)
+### unordered_map <int, int> exact (unordered_map <int, int> &A, string &key)
 // Nhận vào A, đưa ra những đoạn chứa đúng key
 
-# unordered_map <int, int> fileNameQuery (unordered_map <int, int> &A, string &fileNameRequire)
+### unordered_map <int, int> fileNameQuery (unordered_map <int, int> &A, string &fileNameRequire)
 // Ở fileNameRequire, xử lý cho cả filetype và intitle
 
-# unordered_map <int, int> wildcard (unordered_map <int, int> &A, vector <string> &orderedKey)
+### unordered_map <int, int> wildcard (unordered_map <int, int> &A, vector <string> &orderedKey)
 // Nhận vào A, đưa ra những đoạn chứa các string theo thứ tự của orderedKey
 
-# unordered_map <int, int> search(Trie* root, string &key)
+### unordered_map <int, int> search(Trie* root, string &key)
 // Đưa ra những đoạn chứa key
 
-# unordered_map <int, int> range(string &left, string &right)
+### unordered_map <int, int> range(string &left, string &right)
 // Đưa ra những đoạn trong khoảng từ left đến right
 
 # CHIA CÔNG VIỆC
-# Dũng:
+### Dũng:
     - Lên sơ đồ
     - Làm box nhập input và suggestion
     - Chuẩn hóa file
     - Xử lý Trie
     - Làm thống kê
-# Hưng:
+### Hưng:
     - merge, intersect, filenamequery
     - Từ input, xử lý sao cho ra được unordered_map chứa những id file + số lần xuất hiện, và những từ khóa để Hiệp highlight.
-# Duy:
+### Duy:
     - exact, wildcard, range.
     - Viết report
-# Hiệp:
+### Hiệp:
     - Tìm dictionary, lưu lại những unordered_map <string, vector<string> > synonym
     - Làm bảng output, cần thể hiện được rõ những thông tin sau: top 5 output: tên file, đoạn text và highlight từ khóa, số lần xuất hiện.
 
