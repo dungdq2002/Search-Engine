@@ -54,11 +54,11 @@ Cách tìm: Sau khi tìm được những file phù hợp bên trái và file ph
 
 - unordered_map <int, int> intersect (unordered_map <int, int> &A, unordered_map <int, int> &B): Nhận vào A, B, đưa ra giao của A và B, phép AND
 
-- unordered_map <int, int> exact (unordered_map <int, int> &A, string &key): Nhận vào A, đưa ra những đoạn chứa đúng key
+- void exact (unordered_map <int, int> &A, string &key): Nhận vào A, đưa ra những đoạn chứa đúng key
 
 - unordered_map <int, int> fileNameQuery (unordered_map <int, int> &A, string &fileNameRequire): Ở fileNameRequire, xử lý cho cả filetype và intitle
 
-- unordered_map <int, int> wildcard (unordered_map <int, int> &A, vector <string> &orderedKey): Nhận vào A, đưa ra những đoạn chứa các string theo thứ tự của orderedKey
+- void wildcard (unordered_map <int, int> &A, vector <string> &orderedKey): Nhận vào A, đưa ra những đoạn chứa các string theo thứ tự của orderedKey
 
 - unordered_map <int, int> search(Trie* root, string &key): Đưa ra những đoạn chứa key
 
@@ -78,7 +78,7 @@ Cách tìm: Sau khi tìm được những file phù hợp bên trái và file ph
 - exact, wildcard, range.
 - Viết report
 ### Hiệp:
-- Tìm dictionary, lưu lại những unordered_map <string, vector<string> > synonym
+- Tìm dictionary, lưu lại những vector <vector <string>> synonym, unorder_map <string, int> idDict;
 - Làm bảng output, cần thể hiện được rõ những thông tin sau: top 5 output: tên file, đoạn text và highlight từ khóa, số lần xuất hiện.
 
 # File
