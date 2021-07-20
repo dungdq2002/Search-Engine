@@ -47,4 +47,20 @@ void clean(string &s)
         s = NONE;
 }
 
+vector<string> splitString(const string &inputString)
+{
+    vector<string> result;
+    size_t startPos = 0, endPos = inputString.find_first_of(' ');
+    while (endPos <= string::npos)
+    {
+        result.emplace_back(inputString.substr(startPos, endPos - startPos));
+        startPos = endPos + 1;
+        endPos = inputString.find_first_of(' ', startPos);
+    }
+    return result;
+}
+bool isAlphaOrDigit(char ch)
+{
+    return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '0');
+}
 #endif
