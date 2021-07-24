@@ -62,6 +62,19 @@
 
 - `unordered_map <int, int> range(string &left, string &right)`: Đưa ra những đoạn trong khoảng từ left đến right
 
+# Chú thích nho nhỏ của Phú Hưng:
+
+Để tránh các trường hợp đáng tiếc xảy ra, tôi xin mạng phép có 1 chút sửa đổi nhỏ (mặc dù sẽ làm giảm độ chính xác của Engine nhưng bù lại giúp chúng ta có thời gian bồi đắp tình yêu thương với bạn bè và người thân (tôi biết 3 bạn làm gì có người yêu))
+
+### Operator `intitle:`:
+- Nếu `inputString = "intitle:abc"` hoặc `inputString = "abc intitle:xyz"`: không có gì để nói
+- Nếu `inputString = "... intitle:abc xyz"`: search cả `"abc"` và `"xyz"` trong title (`"xyz" != "AND" || "OR"`)
+- Nếu `inputString = "... intitle:abc xyz mnp"`: search `"abc"` và `"xyz"` trong title, `"mnp"` không nằm trong title (`"xyz" != "AND" || "OR"`)
+- Nói cách khác chỉ cho phép search tối đa 2 từ với operator `intitle:`
+
+### Operator wildcards `"*"`:
+- `inputString = "... abc xyz def * ghi ..."`: search `"def * ghi"`
+
 # Chia công việc
 
 ### Dũng:

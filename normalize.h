@@ -20,7 +20,7 @@ void scanStopword()
 
 bool trueChar(char c)
 {
-    if (c == '-' || c == '$' || c == '#')
+    if (c == '-' || c == '$' || c == '#' || c == '~')
         return true;
     if (isalnum(c))
         return true;
@@ -29,7 +29,7 @@ bool trueChar(char c)
 
 void clean(string &s)
 {
-    string t, NONE;
+    string t = "", NONE = "";
     for (char c : s)
     {
         if (c == -30)
@@ -47,20 +47,72 @@ void clean(string &s)
         s = NONE;
 }
 
-vector<string> splitString(const string &inputString)
+vector<string> splitInput(const string &inputStr)
 {
     vector<string> result;
-    size_t startPos = 0, endPos = inputString.find_first_of(' ');
+    size_t startPos = 0, endPos = inputStr.find_first_of(' ');
+
     while (endPos <= string::npos)
     {
-        result.emplace_back(inputString.substr(startPos, endPos - startPos));
+        if (inputStr[startPos] == '\"')
+            endPos = inputStr.find_first_of('\"', startPos + 1);
+
+        string tempStr = inputStr.substr(startPos, endPos - startPos);
+
+        if (tempStr == "AND" || tempStr == "OR")
+            result.emplace_back(tempStr);
+
+        else if (tempStr == "*")
+        {
+            if (!result.empty())
+            {
+                tempStr = result[result.size() - 1] + " *";
+                result.pop_back();
+            }
+
+            startPos = endPos + 1;
+            endPos = inputStr.find_first_of(' ', startPos);
+
+            if (endPos <= string::npos)
+            {
+                tempStr += " " + inputStr.substr(startPos, endPos - startPos);
+                result.emplace_back(tempStr);
+            }
+            else
+            {
+                result.emplace_back(tempStr);
+                return result;
+            }
+        }
+
+        else
+        {
+            transform(tempStr.begin(), tempStr.end(), tempStr.begin(), ::tolower);
+
+            if (__stopword__.find(tempStr) != __stopword__.end())
+                result.emplace_back(tempStr);
+        }
+
         startPos = endPos + 1;
-        endPos = inputString.find_first_of(' ', startPos);
+        endPos = inputStr.find_first_of(' ', startPos);
     }
+
     return result;
 }
+
 bool isAlphaOrDigit(char ch)
 {
     return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '0');
 }
+
+bool isOperator(const string &word)
+{
+    return word == "AND" || word == "OR";
+}
+
+bool isStartWiths(const string &word, const string &chars)
+{
+    return word.substr(0, chars.length()) == chars;
+}
+
 #endif
