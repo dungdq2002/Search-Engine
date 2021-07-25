@@ -1,16 +1,25 @@
 #ifndef READ_H
 #define READ_H
 
-/*#include "trie.h"
+#include "trie.h"
 #include "normalize.h"
+
 #include <string>
 #include <vector>
 #include <fstream>
 #include <iostream>
 #include <filesystem>
 using namespace std;
-namespace fs = filesystem;*/
-#include "library.h"
+namespace fs = filesystem;
+
+struct SYNONYM_DATA
+{
+    unordered_map<string, int> idDict;
+    vector<vector<string>> dict;
+    SYNONYM_DATA()
+    {
+    }
+};
 
 void importFile(TRIE &Trie, string folder, vector<string> &fileName, vector<vector<string>> &fileData)
 {

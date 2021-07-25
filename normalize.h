@@ -1,13 +1,13 @@
 #ifndef NORMALIZE_H
 #define NORMALIZE_H
 
-/*#include <string>
+#include <string>
 #include <cctype>
 #include <fstream>
 #include <iostream>
+#include <algorithm>
 #include <unordered_set>
-using namespace std;*/
-#include "library.h"
+using namespace std;
 
 unordered_set<string> __stopword__;
 
@@ -55,12 +55,22 @@ vector<string> splitInput(const string &inputStr)
     while (endPos <= string::npos)
     {
         if (inputStr[startPos] == '\"')
+        {
             endPos = inputStr.find_first_of('\"', startPos + 1);
+            result.emplace_back(inputStr.substr(startPos, endPos - startPos + 1));
+            if (endPos == string::npos)
+                return result;
+            startPos = endPos + 2;
+            endPos = inputStr.find_first_of(' ', startPos);
+            continue;
+        }
 
         string tempStr = inputStr.substr(startPos, endPos - startPos);
 
         if (tempStr == "AND" || tempStr == "OR")
+        {
             result.emplace_back(tempStr);
+        }
 
         else if (tempStr == "*")
         {
@@ -70,28 +80,60 @@ vector<string> splitInput(const string &inputStr)
                 result.pop_back();
             }
 
-            startPos = endPos + 1;
-            endPos = inputStr.find_first_of(' ', startPos);
-
-            if (endPos <= string::npos)
-            {
-                tempStr += " " + inputStr.substr(startPos, endPos - startPos);
-                result.emplace_back(tempStr);
-            }
-            else
+            if (endPos == string::npos)
             {
                 result.emplace_back(tempStr);
                 return result;
             }
+            startPos = endPos + 1;
+            endPos = inputStr.find_first_of(' ', startPos);
+            tempStr += ' ' + inputStr.substr(startPos, endPos - startPos);
+            result.emplace_back(tempStr);
+        }
+
+        else if (isStartWiths(tempStr, "intitle:"))
+        {
+            if (endPos == string::npos)
+            {
+                result.emplace_back(tempStr);
+                return result;
+            }
+            startPos = endPos + 1;
+            endPos = inputStr.find_first_of(' ', startPos);
+            tempStr += ' ' + inputStr.substr(startPos, endPos - startPos);
+            result.emplace_back(tempStr);
         }
 
         else
         {
             transform(tempStr.begin(), tempStr.end(), tempStr.begin(), ::tolower);
-
             if (__stopword__.find(tempStr) != __stopword__.end())
                 result.emplace_back(tempStr);
         }
+
+        if (endPos == string::npos)
+            return result;
+
+        startPos = endPos + 1;
+        endPos = inputStr.find_first_of(' ', startPos);
+    }
+
+    return result;
+}
+
+vector<string> splitPharse(const string &inputStr)
+{
+    vector<string> result;
+    size_t startPos = 0, endPos = inputStr.find_first_of(' ');
+
+    while (endPos <= string::npos)
+    {
+        string tempStr = inputStr.substr(startPos, endPos - startPos);
+        transform(tempStr.begin(), tempStr.end(), tempStr.begin(), ::tolower);
+        result.emplace_back(tempStr);
+
+        if (endPos == string::npos)
+            return result;
 
         startPos = endPos + 1;
         endPos = inputStr.find_first_of(' ', startPos);

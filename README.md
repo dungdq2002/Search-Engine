@@ -64,7 +64,7 @@
 
 # Chú thích nho nhỏ của Phú Hưng:
 
-Để tránh các trường hợp đáng tiếc xảy ra, tôi xin mạng phép có 1 chút sửa đổi nhỏ (mặc dù sẽ làm giảm độ chính xác của Engine nhưng bù lại giúp chúng ta có thời gian bồi đắp tình yêu thương với bạn bè và người thân (tôi biết 3 bạn làm gì có người yêu))
+**Để tránh các trường hợp đáng tiếc xảy ra, tôi xin mạng phép có 1 chút sửa đổi nhỏ (mặc dù sẽ làm giảm độ chính xác của Engine nhưng bù lại giúp chúng ta có thời gian bồi đắp tình yêu thương với bạn bè và người thân (`tôi biết 3 bạn làm gì có người yêu`))**
 
 ### Operator `intitle:`:
 - Nếu `inputString = "intitle:abc"` hoặc `inputString = "abc intitle:xyz"`: không có gì để nói
@@ -92,8 +92,8 @@
 - exact, wildcard, range.
 - Viết report
 
-### Hiệp:
-- Tìm dictionary, lưu lại những vector <vector <string>> synonym, unorder_map <string, int> idDict;
+### Hiệp: 
+- Tìm dictionary, lưu lại những vector `<vector <string>> synonym`, `unorder_map <string, int>` idDict; **(em create struct SYNONYM_DATA trong reah.h hộ anh Hiệp rồi, hoàn thành constructor để đọc file vào là được nhe)**
 - Làm bảng output, cần thể hiện được rõ những thông tin sau: top 5 output: tên file, đoạn text và highlight từ khóa, số lần xuất hiện.
 
 # File

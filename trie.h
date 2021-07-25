@@ -1,12 +1,11 @@
 #ifndef TRIE_H
 #define TRIE_H
 
-/*#include <string>
+#include <string>
 #include <cctype>
 #include <cassert>
 #include <unordered_map>
-using namespace std;*/
-#include "library.h"
+using namespace std;
 
 int _(char c)
 {
