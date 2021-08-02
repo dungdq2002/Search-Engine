@@ -47,6 +47,29 @@ void clean(string &s)
         s = NONE;
 }
 
+/*pair<int, int> getOperator(string &inputStr)
+{
+    if (inputStr[0] == '\"')
+    {
+        inputStr.erase(inputStr.begin());
+        inputStr.pop_back();
+        return make_pair(11, 0);
+    }
+    vector<string> oprts = {
+                           
+                            "*"};//
+    for (int i = 0; i < 11; ++i)
+    {
+        size_t find = inputStr.find(oprts[i]);
+        if (find != string::npos)
+        {
+            inputStr.erase(find, find + oprts[i].length());
+            return make_pair(i, find);
+        }
+    }
+    return make_pair(-1, 0);
+}*/
+
 vector<string> splitInput(const string &inputStr)
 {
     vector<string> result;
@@ -54,87 +77,13 @@ vector<string> splitInput(const string &inputStr)
 
     while (endPos <= string::npos)
     {
-        if (inputStr[startPos] == '\"')
-        {
-            endPos = inputStr.find_first_of('\"', startPos + 1);
-            result.emplace_back(inputStr.substr(startPos, endPos - startPos + 1));
-            if (endPos == string::npos)
-                return result;
-            startPos = endPos + 2;
-            endPos = inputStr.find_first_of(' ', startPos);
-            continue;
-        }
-
         string tempStr = inputStr.substr(startPos, endPos - startPos);
 
-        if (tempStr == "AND" || tempStr == "OR")
-        {
-            result.emplace_back(tempStr);
-        }
-
-        else if (tempStr == "*")
-        {
-            if (!result.empty())
-            {
-                tempStr = result[result.size() - 1] + " *";
-                result.pop_back();
-            }
-
-            if (endPos == string::npos)
-            {
-                result.emplace_back(tempStr);
-                return result;
-            }
-            startPos = endPos + 1;
-            endPos = inputStr.find_first_of(' ', startPos);
-            tempStr += ' ' + inputStr.substr(startPos, endPos - startPos);
-            result.emplace_back(tempStr);
-        }
-
-        else if (isStartWiths(tempStr, "intitle:"))
-        {
-            if (endPos == string::npos)
-            {
-                result.emplace_back(tempStr);
-                return result;
-            }
-            startPos = endPos + 1;
-            endPos = inputStr.find_first_of(' ', startPos);
-            tempStr += ' ' + inputStr.substr(startPos, endPos - startPos);
-            result.emplace_back(tempStr);
-        }
-
-        else
-        {
-            transform(tempStr.begin(), tempStr.end(), tempStr.begin(), ::tolower);
-            if (__stopword__.find(tempStr) != __stopword__.end())
-                result.emplace_back(tempStr);
-        }
-
-        if (endPos == string::npos)
-            return result;
-
-        startPos = endPos + 1;
-        endPos = inputStr.find_first_of(' ', startPos);
-    }
-
-    return result;
-}
-
-vector<string> splitPharse(const string &inputStr)
-{
-    vector<string> result;
-    size_t startPos = 0, endPos = inputStr.find_first_of(' ');
-
-    while (endPos <= string::npos)
-    {
-        string tempStr = inputStr.substr(startPos, endPos - startPos);
-        transform(tempStr.begin(), tempStr.end(), tempStr.begin(), ::tolower);
+        //transform(tempStr.begin(), tempStr.end(), tempStr.begin(), ::tolower);
         result.emplace_back(tempStr);
 
         if (endPos == string::npos)
-            return result;
-
+            break;
         startPos = endPos + 1;
         endPos = inputStr.find_first_of(' ', startPos);
     }
@@ -142,19 +91,60 @@ vector<string> splitPharse(const string &inputStr)
     return result;
 }
 
-bool isAlphaOrDigit(char ch)
+pair<int, int> getOperator(vector<string> &keyWords)
 {
-    return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '0');
+    //  " "
+    if (keyWords[0][0] == '\"')
+    {
+        keyWords[0].erase(keyWords[0].begin());
+        keyWords[keyWords.size() - 1].pop_back();
+        return make_pair(10, 0);
+    }
+    vector<string> oprts = {"AND", "OR", "*", "intitle:", "filetype:", "#", "~", "+", "-", "$"};
+
+    //  AND, OR, *
+    for (int i = 0; i < 3; ++i)
+    {
+        vector<string>::iterator found = find(keyWords.begin(), keyWords.end(), oprts[i]);
+        if (found != keyWords.end())
+        {
+            keyWords.erase(found);
+            return make_pair(i, found - keyWords.begin());
+        }
+    }
+
+    //  intitle:, filetype:, #, ~
+    for (int i = 3; i < 7; ++i)
+    {
+        if (keyWords[0].find(oprts[i]) == 0)
+        {
+            keyWords[0].erase(0, oprts[i].length());
+            return make_pair(i, 0);
+        }
+    }
+
+    //  +, -, $
+    for (int i = 7; i < 10; ++i)
+    {
+        for (int j = 0; j < keyWords.size(); ++j)
+        {
+            if (keyWords[j][0] == oprts[i][0])
+            {
+                keyWords[j].erase(keyWords[j].begin());
+                return make_pair(i, j);
+            }
+        }
+    }
+    return make_pair(-1, 0);
 }
 
-bool isOperator(const string &word)
+void normalizeKeyWords(vector<string> &keyWords)
 {
-    return word == "AND" || word == "OR";
+    for (int i = 0; i < keyWords.size(); ++i)
+    {
+        transform(keyWords[i].begin(), keyWords[i].end(), keyWords[i].begin(), ::tolower);
+        if (__stopword__.find(keyWords[i]) != __stopword__.end())
+            keyWords.erase(keyWords.begin() + i);
+    }
 }
-
-bool isStartWiths(const string &word, const string &chars)
-{
-    return word.substr(0, chars.length()) == chars;
-}
-
 #endif
