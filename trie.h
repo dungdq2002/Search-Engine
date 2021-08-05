@@ -1,9 +1,12 @@
 #ifndef TRIE_H
 #define TRIE_H
 
+#include <vector>
 #include <string>
 #include <cctype>
 #include <cassert>
+#include <iostream>
+#include <algorithm>
 #include <unordered_map>
 using namespace std;
 
@@ -22,17 +25,17 @@ int _(char c)
     assert(false);
 }
 
-#define MAXCHAR 39
+#define _MAXCHAR 39
 class TRIE
 {
 private:
     struct TrieNode
     {
-        TrieNode *child[MAXCHAR];
+        TrieNode *child[_MAXCHAR];
         unordered_map<int, int> file;
         TrieNode()
         {
-            for (int i = 0; i < MAXCHAR; i++)
+            for (int i = 0; i < _MAXCHAR; i++)
                 child[i] = NULL;
         }
     };
@@ -68,7 +71,7 @@ private:
     {
         if (cur)
         {
-            for (int i = 0; i < MAXCHAR; i++)
+            for (int i = 0; i < _MAXCHAR; i++)
                 destroy(cur->child[i]);
             delete cur;
         }
@@ -89,5 +92,94 @@ public:
 
     ~TRIE() { destroy(root); }
 };
+
+
+#define _MAXCHAR1 256
+class TRIE_SEARCHING_HISTORY
+{
+private:
+    struct TrieNode
+    {
+        TrieNode *child[_MAXCHAR1];
+        int cntEnd;
+        TrieNode()
+        {
+            cntEnd = 0;
+            for (int i = 0; i < _MAXCHAR1; i++)
+                child[i] = NULL;
+        }
+    };
+
+    TrieNode *root;
+
+    inline void _insert(TrieNode *cur, const string &s) {
+        for (char c : s)
+        {
+            if (!cur->child[c])
+                cur->child[c] = new TrieNode();
+            cur = cur->child[c];
+        }
+        cur -> cntEnd++;
+    }
+
+    void _dfs(TrieNode *cur, string& tmp, vector < pair <int, string> > &res) {
+        if (cur -> cntEnd) {
+            res.push_back({cur -> cntEnd, tmp});
+        }
+        for (int i = 0; i < 256; i++) {
+            if (cur -> child[i]) {
+                tmp += char(i);
+                _dfs(cur -> child[i], tmp, res);
+                tmp.pop_back();
+            }
+        }
+    }
+
+    inline vector <string> _search(TrieNode *cur, const string &s)
+    {
+        vector <string> ZERO;
+        for (char c : s)
+        {
+            if (!cur->child[c])
+                return ZERO;
+            cur = cur->child[c];
+        }
+        string tmp = s;
+        vector <pair <int, string> > _get;
+        _dfs(cur, tmp, _get);
+        sort(_get.rbegin(), _get.rend());
+        vector <string> res;
+        for (int i = 0; i < min(int(_get.size()), 5); i++) {
+            res.push_back(_get[i].second);
+        }
+        return res;
+    }
+
+    void destroy(TrieNode *cur)
+    {
+        if (cur)
+        {
+            for (int i = 0; i < _MAXCHAR1; i++)
+                destroy(cur->child[i]);
+            delete cur;
+        }
+    }
+
+public:
+    TRIE_SEARCHING_HISTORY() { root = new TrieNode(); }
+
+    inline void insert(const string &s)
+    {
+        _insert(root, s);
+    }
+
+    inline vector <string> search(const string &s)
+    {
+        return _search(root, s);
+    }
+
+    ~TRIE_SEARCHING_HISTORY() { destroy(root); }
+};
+
 
 #endif
