@@ -168,6 +168,123 @@ void eliminateMap(const string &word, unordered_map<int, int> &wordMap, unordere
     }
 }
 
+//Commit cua Duy (Exact, Wildcard)
+void exact (unordered_map <int, int> &A, string &key){
+    vector<string> v = splitInput(key);
+    normalizeKeyWords(v);
+    int n = v.size();
+    int cnt = 0;
+    vector<int> d(n, 0);
+    unordered_map<int, int> hashMapKey;
+    for (int i=0; i<n; ++i)
+        hashMapKey[v[i]] = i;
+
+    for(auto x: A){
+        vector<string> *u = &fileData[x.first];
+        for (int i=0; i<n; ++i)
+            d[i] = 0;
+        int m = u.size();
+
+        for (int i=0; i<m; ++i){
+            if (hashMapKey.count(u[i])){
+                int tmp = hashMapKey[u[i]];
+                if (d[tmp] == 0)
+                    ++cnt;
+                ++d[tmp];
+            }
+
+            if (i>=n){
+                if (hashMapKey.count(u[i])){
+                    int tmp = hashMapKey[u[i]];
+                    if (d[tmp] == 1)
+                        --cnt;
+                    --d[tmp];
+                }
+            }
+
+            if (cnt == n){
+                /// from i-n+1 to i is the exact tring
+
+            }
+        }
+    }
+}
+
+void wildcard (unordered_map <int, int> &A, vector <string> &orderedKey){
+    vector<vector<string> > v;
+    for (auto x: orderedKey){
+        v.push_back(splitInput(x));
+        normalizeKeyWords(v.back());
+    }
+
+    int cur = 0;
+    int numKey = v.size();
+    unordered_map<int,int> hashMapKey[numKey];
+    vector<int> d[numKey];
+    for (int i=0; i<numKey; ++i){
+        int n = v[i].size();
+
+        d[i].resize(n);
+        for (int j=0; j<n; ++j)
+            d[i][j]=0;
+
+        for (int j=0; j<n;++j)
+            hashMapKey[i][v[i][j]] = j;
+    }
+
+    int cnt = 0;
+    for(auto x: A){
+        vector<pair<int,int> > res;
+        vector<string> *u = &fileData[x.first];
+        int m = u.size();
+
+        int cur = 0;
+        int n;
+
+        for (int i=0; i<numKey; ++i){
+            n = v[i].size();
+            for (int j=0; j<n; ++j){
+                d[i][j] = 0;
+            }
+        }
+
+        n = v[cur].size();
+        cnt = 0;
+        for (int i=0; i<m; ++i){
+            if (hashMapKey[cur].count(u[i])){
+                int tmp = hashMapKey[cur][u[i]];
+                if (d[tmp] == 0)
+                    ++cnt;
+                ++d[tmp];
+            }
+
+            if (i>=n){
+                if (hashMapKey[cur].count(u[i])){
+                    int tmp = hashMapKey[cur][u[i]];
+                    if (d[tmp] == 1)
+                        --cnt;
+                    --d[tmp];
+                }
+            }
+
+            if (cnt == n){
+                /// from i-n+1 to i is the exact tring
+                res.push_back(make_pair(i-n+1, i));
+                ++cur;
+                if (cur == numKey)
+                    break;
+
+                cnt = 0;
+                n = v[cur].size();
+            }
+        }
+    }
+
+    /// in Res store to point of the exact string in ordered
+    res;
+
+}
+
 #endif
 
 /*unordered_map<int, int> merge(unordered_map<int, int> &A, unordered_map<int, int> &B)
