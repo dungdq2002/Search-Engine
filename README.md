@@ -75,6 +75,14 @@
 ### Operator wildcards `"*"`:
 - `inputString = "... abc xyz def * ghi ..."`: search `"def * ghi"`
 
+**Bỏ cái tôi viết ở trên đi mọi người ạ! Mặc dù không ảnh hưởng gì đâu**
+
+### Operator `intitle:`:
+Search tất cả các từ ở đằng sau cho đến khi gặp 1 operator khác
+
+### Operator wildcards `"*"`:
+Seacr tất cả các từ nằm 2 bên cho đến khi gặp 1 operator khác
+
 # Chia công việc
 
 ### Dũng:

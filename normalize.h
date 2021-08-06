@@ -26,6 +26,21 @@ bool isStartWiths(const string &word, const string &chars)
     return word.substr(0, chars.length()) == chars;
 }
 
+bool hasOperator(const string &word)
+{
+    if (isStartWiths(word, "intitle:") || isStartWiths(word, "filetype"))
+        return true;
+
+    vector<char> oprts = {'+', '-', '$', '#', '\"'};
+    for (char oprt : oprts)
+        if (word[0] == oprt)
+            return true;
+
+    if (word.find_first_of("..") != string::npos || word.find_first_of("*") != string::npos)
+        return true;
+    return false;
+}
+
 void scanStopword()
 {
     ifstream inp("stopword.txt");
@@ -89,41 +104,83 @@ vector<string> splitInput(const string &inputStr)
 
         else if (tempStr == "*")
         {
-            if (!result.empty())
+            while (!result.empty())
             {
-                tempStr = result[result.size() - 1] + " *";
-                result.pop_back();
+                string tempWord = result[result.size() - 1];
+
+                if (!isOperator(tempWord) && !hasOperator(tempWord))
+                {
+                    tempStr = tempWord + " " + tempStr;
+                    result.pop_back();
+                }
+                else
+                    break;
             }
 
-            if (endPos == string::npos)
-            {
-                result.emplace_back(tempStr);
-                return result;
-            }
             startPos = endPos + 1;
             endPos = inputStr.find_first_of(' ', startPos);
-            tempStr += ' ' + inputStr.substr(startPos, endPos - startPos);
+
+            while (endPos <= string::npos)
+            {
+                string tempTempStr = inputStr.substr(startPos, endPos - startPos);
+
+                if (!isOperator(tempTempStr) && !hasOperator(tempTempStr))
+                    tempStr += " " + tempTempStr;
+                else
+                {
+                    startPos -= tempTempStr.length() + 1;
+                    endPos -= tempTempStr.length() + 1;
+                    break;
+                }
+
+                if (endPos == string::npos)
+                {
+                    result.emplace_back(tempStr);
+                    return result;
+                }
+
+                startPos = endPos + 1;
+                endPos = inputStr.find_first_of(' ', startPos);
+            }
+
             result.emplace_back(tempStr);
         }
 
         else if (isStartWiths(tempStr, "intitle:"))
         {
-            if (endPos == string::npos)
-            {
-                result.emplace_back(tempStr);
-                return result;
-            }
             startPos = endPos + 1;
             endPos = inputStr.find_first_of(' ', startPos);
-            tempStr += ' ' + inputStr.substr(startPos, endPos - startPos);
+
+            while (endPos <= string::npos)
+            {
+                string tempTempStr = inputStr.substr(startPos, endPos - startPos);
+
+                if (!isOperator(tempTempStr) && !hasOperator(tempTempStr))
+                    tempStr += " " + tempTempStr;
+                else
+                {
+                    startPos -= tempTempStr.length() + 1;
+                    endPos -= tempTempStr.length() + 1;
+                    break;
+                }
+
+                if (endPos == string::npos)
+                {
+                    result.emplace_back(tempStr);
+                    return result;
+                }
+
+                startPos = endPos + 1;
+                endPos = inputStr.find_first_of(' ', startPos);
+            }
+
             result.emplace_back(tempStr);
         }
 
         else
         {
             transform(tempStr.begin(), tempStr.end(), tempStr.begin(), ::tolower);
-            if (__stopword__.find(tempStr) != __stopword__.end())
-                result.emplace_back(tempStr);
+            result.emplace_back(tempStr);
         }
 
         if (endPos == string::npos)

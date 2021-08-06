@@ -71,6 +71,12 @@ unordered_map<int, unordered_map<string, int>> handleInput(const string &inputSt
             word.erase(word.begin());
             word.pop_back();
             vector<string> wordSplit = splitPharse(word);
+            unordered_map<int, int> pharseMap = handleExact(wordSplit, trie, fileData);
+
+            if (currentOperator == "" || currentOperator == "OR")
+                mergeMap(word, pharseMap, resultMap);
+            else
+                intersectMap(word, pharseMap, resultMap);
 
             continue;
         }
@@ -153,7 +159,11 @@ void intersectMap(const string &word, unordered_map<int, int> &wordMap, unordere
         unordered_map<int, unordered_map<string, int>>::iterator find = resultMap.find(wordInfo.first);
 
         if (find != resultMap.end())
+        {
             find->second[word] = min(wordInfo.second, find->second[word]);
+            if (find->second[word] == 0)
+                find->second.erase(word);
+        }
     }
 }
 
@@ -169,7 +179,7 @@ void eliminateMap(const string &word, unordered_map<int, int> &wordMap, unordere
 }
 
 //Commit cua Duy (Exact, Wildcard)
-void exact (unordered_map <int, int> &A, string &key){
+/*void exact (unordered_map <int, int> &A, string &key){
     vector<string> v = splitInput(key);
     normalizeKeyWords(v);
     int n = v.size();
@@ -283,32 +293,46 @@ void wildcard (unordered_map <int, int> &A, vector <string> &orderedKey){
     /// in Res store to point of the exact string in ordered
     res;
 
+}*/
+
+unordered_map<int, int> handleExact(vector<string> &words, TRIE &trie, vector<vector<string>> &fileData)
+{
+    unordered_map<int, int> result;
+    unordered_map<int, unordered_map<string, int>> allFiles;
+
+    for (string word : words)
+    {
+        unordered_map<int, int> wordInfo = trie.search(word);
+        mergeMap(word, wordInfo, allFiles);
+    }
+
+    for (pair<int, unordered_map<string, int>> fileInfo : allFiles)
+    {
+        if (fileInfo.second.size() < words.size())
+            continue;
+
+        int fileID = fileInfo.first;
+        vector<string>::iterator found = find(fileData[fileID].begin(), fileData[fileID].end(), words[0]);
+
+        while (found != fileData[fileID].end())
+        {
+            bool isExact = true;
+
+            for (int i = 1; i < words.size(); ++i)
+                if (*(found + i) != words[i])
+                {
+                    isExact = false;
+                    break;
+                }
+
+            if (isExact)
+                ++result[fileID];
+
+            found = find(found, fileData[fileID].end(), words[0]);
+        }
+    }
+
+    return result;
 }
 
 #endif
-
-/*unordered_map<int, int> merge(unordered_map<int, int> &A, unordered_map<int, int> &B)
-{
-    unordered_map<int, int> result = A;
-    for (pair<int, int> b : B)
-        result[b.first] += b.second;
-    return result;
-}
-
-unordered_map<int, int> intersect(unordered_map<int, int> &A, unordered_map<int, int> &B)
-{
-    unordered_map<int, int> result;
-    for (pair<int, int> a : A)
-    {
-        unordered_map<int, int>::iterator find = B.find(a.first);
-        if (find != B.end())
-            result[a.first] = a.second + (*find).second;
-    }
-    return result;
-}
-
-unordered_map<int, int> fileNameQuery(unordered_map<int, int> &A, string &fileNameRequire)
-{
-}
-
-unordered_map<int, int> synonym(const string &word, vector<string> &resultWords, TRIE &trie) {}*/
