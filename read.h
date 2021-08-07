@@ -18,6 +18,44 @@ struct SYNONYM_DATA
     vector<vector<string>> dict;
     SYNONYM_DATA()
     {
+        read_file();
+    }
+
+    void read_file()
+    {
+        fstream fin;
+
+        fin.open("data.csv", ios::in);
+
+        vector<string> row;
+        string line, word, temp;
+
+        int rowID = 0, tmp;
+
+        while (fin >> temp) {
+
+            row.clear();
+
+            getline(fin, line);
+
+            stringstream s(line);
+
+            tmp = 0;
+            while (getline(s, word, ',')) {
+                if (tmp > 0)
+                {
+                    row.push_back(word);
+                    idDict[word] = rowID;
+                }
+                tmp++;
+            }
+
+            dict.push_back(row);
+
+            rowID++;
+            if (rowID == 10)
+                break;
+        }
     }
 };
 
