@@ -335,4 +335,9 @@ unordered_map<int, int> handleExact(vector<string> &words, TRIE &trie, vector<ve
     return result;
 }
 
+//  map<fileID, map<từ thay thế cho *, số lần xuất hiện của từ đó trong file fileID>>
+unordered_map<int, unordered_map<string, int>> handleWildcard(vector<string> words, TRIE &trie, vector<vector<string>> &fileData)
+{
+}
+
 #endif
