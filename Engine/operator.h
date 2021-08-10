@@ -247,7 +247,7 @@ unordered_map<int, unordered_map<string, int>> handleWildcard(vector<string> wor
         {
             bool isExact = true;
 
-            for (int i = 2; i < words.size(); ++i)
+            for (int i = startPos + 1; i < words.size(); ++i)
             {
                 if (i == wildcardPos)
                     continue;
