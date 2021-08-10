@@ -41,6 +41,50 @@ int getKey() {
     return z;
 }
 
+struct resultData {
+    int appearTime;
+    int fileId;
+    string keyword;
+
+    resultData(int x, string key, int y)
+    {
+        fileId = x;
+        appearTime = y;
+        keyword = key;
+    }
+};
+
+int sortedResultCmd(resultData a, resultData b)
+{
+    return a.appearTime > b.appearTime;
+}
+
+void outResult(unordered_map<int, unordered_map<string, int>> result)
+{
+    vector<resultData> sortedResult;
+
+    for (auto id = result.begin(); id != result.end(); id++)
+    {
+        unordered_map<string, int> file = (*id).second;
+        for (auto key : file)
+        {
+            resultData data = resultData((*id).first, key.first, key.second);
+            sortedResult.push_back(data);
+        }
+    }
+
+    sort(sortedResult.begin(), sortedResult.end(), sortedResultCmd);
+
+    cout << "TOP 5 result:" << endl;
+
+    int length = sortedResult.size();
+    for (int i = 0; i < min(5, length); i++)
+    {
+        resultData endResult = sortedResult[i];
+        cout << "Result " << i << ": " << endResult.keyword << " appear in " << endResult.fileId << " " << endResult.appearTime << " times" << endl;
+    }
+}
+
 void searchBox() {
     ofstream historyFile("search_history.txt", ios::app);
 
