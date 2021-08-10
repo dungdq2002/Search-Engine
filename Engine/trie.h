@@ -25,17 +25,17 @@ int _(char c)
     assert(false);
 }
 
-#define _MAXCHAR 39
+#define __MAXCHAR 39
 class TRIE
 {
 private:
     struct TrieNode
     {
-        TrieNode *child[_MAXCHAR];
+        TrieNode *child[__MAXCHAR];
         unordered_map<int, int> file;
         TrieNode()
         {
-            for (int i = 0; i < _MAXCHAR; i++)
+            for (int i = 0; i < __MAXCHAR; i++)
                 child[i] = NULL;
         }
     };
@@ -71,7 +71,7 @@ private:
     {
         if (cur)
         {
-            for (int i = 0; i < _MAXCHAR; i++)
+            for (int i = 0; i < __MAXCHAR; i++)
                 destroy(cur->child[i]);
             delete cur;
         }
@@ -94,18 +94,18 @@ public:
 };
 
 
-#define _MAXCHAR1 256
+#define __MAXCHAR1 256
 class TRIE_SEARCHING_HISTORY
 {
 private:
     struct TrieNode
     {
-        TrieNode *child[_MAXCHAR1];
+        TrieNode *child[__MAXCHAR1];
         int cntEnd;
         TrieNode()
         {
             cntEnd = 0;
-            for (int i = 0; i < _MAXCHAR1; i++)
+            for (int i = 0; i < __MAXCHAR1; i++)
                 child[i] = NULL;
         }
     };
@@ -159,7 +159,7 @@ private:
     {
         if (cur)
         {
-            for (int i = 0; i < _MAXCHAR1; i++)
+            for (int i = 0; i < __MAXCHAR1; i++)
                 destroy(cur->child[i]);
             delete cur;
         }

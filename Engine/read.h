@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <sstream>
 #include <iostream>
 #include <filesystem>
 using namespace std;
@@ -28,15 +29,17 @@ struct SYNONYM_DATA
         fin.open("Resources/data.csv", ios::in);
 
         vector<string> row;
-        string line, word, temp;
+        string line, word, temp = " ";
 
         int rowID = 0, tmp;
-
+        int loop = 2;
         while (fin >> temp)
         {
-
+            if (loop == 0) break;
+            loop--;
             row.clear();
-
+            row.push_back(temp);
+            cout << " im here " << temp << '\n';
             getline(fin, line);
 
             stringstream s(line);
@@ -44,6 +47,7 @@ struct SYNONYM_DATA
             tmp = 0;
             while (getline(s, word, ','))
             {
+                cout << "huhu " << word << '\n';
                 if (tmp > 0)
                 {
                     row.push_back(word);

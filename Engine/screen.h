@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <fstream>
 #include "read.h"
+#include "operator.h"
 using namespace std;
 
 COORD cursorPosition;
@@ -94,7 +95,8 @@ void outResult(unordered_map<int, unordered_map<string, int>> result)
     }
 }
 
-void searchBox()
+void searchBox(TRIE &trie, SYNONYM_DATA &synonymData, vector<vector<string>> &fileData)
+// void searchBox()
 {
     ofstream historyFile("Resources/search_history.txt", ios::app);
 
@@ -161,8 +163,17 @@ void searchBox()
         else if (key == ENTER)
         {
             system("cls");
-            // searching(curSearch);
             cout << " Searching ... " << curSearch << '\n';
+            auto res = handleInput(curSearch, trie, synonymData, fileData);
+            cout << "Size " << res.size() << '\n';
+            for (auto it: res) {
+                cout << "File id: " << it.first << '\n';
+                for (auto huhu: it.second) {
+                    cout << "Word: " << huhu.first << ' ';
+                    cout << "Count: " << huhu.second << '\n';
+                }
+            }
+            // searching(curSearch);
             Trie.insert(curSearch);
             historyFile << curSearch << '\n';
             system("pause");

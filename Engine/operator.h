@@ -9,115 +9,6 @@
 
 const int titleSize = 10;
 
-unordered_map<int, unordered_map<string, int>> handleInput(const string &inputStr, TRIE &trie, SYNONYM_DATA &synonymData, vector<vector<string>> &fileData)
-{
-    unordered_map<int, unordered_map<string, int>> resultMap;
-    vector<string> words = splitInput(inputStr);
-
-    string currentOperator = "";
-
-    for (string word : words)
-    {
-        if (isOperator(word))
-        {
-            currentOperator = word;
-            continue;
-        }
-
-        if (word[0] == '+')
-        {
-            word.erase(word.begin());
-            unordered_map<int, int> wordMap = trie.search(word);
-            intersectMap(word, wordMap, resultMap);
-
-            continue;
-        }
-
-        if (word[0] == '-')
-        {
-            word.erase(word.begin());
-            unordered_map<int, int> wordMap = trie.search(word);
-            eliminateMap(word, wordMap, resultMap);
-
-            continue;
-        }
-
-        if (word[0] == '~')
-        {
-            word.erase(word.begin());
-            unordered_map<string, unordered_map<int, int>> synonym = handleSynonym(word, trie, synonymData);
-
-            if (currentOperator == "" || currentOperator == "OR")
-                for (pair<string, unordered_map<int, int>> wordInfo : synonym)
-                    mergeMap(wordInfo.first, wordInfo.second, resultMap);
-
-            else
-                for (pair<string, unordered_map<int, int>> wordInfo : synonym)
-                    intersectMap(wordInfo.first, wordInfo.second, resultMap);
-
-            currentOperator = "";
-            continue;
-        }
-
-        if (word.find_first_of('*') <= string::npos)
-        {
-            vector<string> wordSplit = splitPharse(word);
-
-            continue;
-        }
-
-        if (word[0] == '\"')
-        {
-            word.erase(word.begin());
-            word.pop_back();
-            vector<string> wordSplit = splitPharse(word);
-            unordered_map<int, int> pharseMap = handleExact(wordSplit, trie, fileData);
-
-            if (currentOperator == "" || currentOperator == "OR")
-                mergeMap(word, pharseMap, resultMap);
-            else
-                intersectMap(word, pharseMap, resultMap);
-
-            continue;
-        }
-
-        if (isStartWiths(word, "intitle:"))
-        {
-            word.erase(word.begin() + 8);
-            unordered_map<string, unordered_map<int, int>> wordMap = handleIntitle(word, trie, fileData);
-
-            if (currentOperator == "" || currentOperator == "OR")
-                for (pair<string, unordered_map<int, int>> wordInfo : wordMap)
-                    mergeMap(wordInfo.first, wordInfo.second, resultMap);
-
-            else
-                for (pair<string, unordered_map<int, int>> wordInfo : wordMap)
-                    intersectMap(wordInfo.first, wordInfo.second, resultMap);
-
-            currentOperator = "";
-            continue;
-        }
-
-        if (isStartWiths(word, "filetype:"))
-        {
-            word.erase(word.begin() + 9);
-
-            continue;
-        }
-
-        unordered_map<int, int> wordMap = trie.search(word);
-
-        if (currentOperator == "" || currentOperator == "OR")
-            mergeMap(word, wordMap, resultMap);
-        else
-            intersectMap(word, wordMap, resultMap);
-
-        currentOperator = "";
-    }
-
-    return resultMap;
-}
-
 unordered_map<string, unordered_map<int, int>> handleSynonym(const string &word, TRIE &trie, SYNONYM_DATA &synonymData)
 {
     unordered_map<string, unordered_map<int, int>> result;
@@ -160,11 +51,16 @@ void intersectMap(const string &word, unordered_map<int, int> &wordMap, unordere
 
         if (find != resultMap.end())
         {
-            find->second[word] = min(wordInfo.second, find->second[word]);
+            find->second[word] += wordInfo.second;
+
             if (find->second[word] == 0)
                 find->second.erase(word);
         }
     }
+
+    for (auto it: resultMap) 
+        if (wordMap.find(it.first) == wordMap.end())
+            resultMap.erase(it.first);
 }
 
 void eliminateMap(const string &word, unordered_map<int, int> &wordMap, unordered_map<int, unordered_map<string, int>> &resultMap)
@@ -270,6 +166,115 @@ unordered_map<int, unordered_map<string, int>> handleWildcard(vector<string> wor
     }
 
     return result;
+}
+
+unordered_map<int, unordered_map<string, int>> handleInput(const string &inputStr, TRIE &trie, SYNONYM_DATA &synonymData, vector<vector<string>> &fileData)
+{
+    unordered_map<int, unordered_map<string, int>> resultMap;
+    vector<string> words = splitInput(inputStr);
+
+    string currentOperator = "";
+
+    for (string word : words)
+    {
+        if (isOperator(word))
+        {
+            currentOperator = word;
+            continue;
+        }
+
+        if (word[0] == '+')
+        {
+            word.erase(word.begin());
+            unordered_map<int, int> wordMap = trie.search(word);
+            intersectMap(word, wordMap, resultMap);
+
+            continue;
+        }
+
+        if (word[0] == '-')
+        {
+            word.erase(word.begin());
+            unordered_map<int, int> wordMap = trie.search(word);
+            eliminateMap(word, wordMap, resultMap);
+
+            continue;
+        }
+
+        if (word[0] == '~')
+        {
+            word.erase(word.begin());
+            unordered_map<string, unordered_map<int, int>> synonym = handleSynonym(word, trie, synonymData);
+
+            if (currentOperator == "" || currentOperator == "OR")
+                for (pair<string, unordered_map<int, int>> wordInfo : synonym)
+                    mergeMap(wordInfo.first, wordInfo.second, resultMap);
+
+            else
+                for (pair<string, unordered_map<int, int>> wordInfo : synonym)
+                    intersectMap(wordInfo.first, wordInfo.second, resultMap);
+
+            currentOperator = "";
+            continue;
+        }
+
+        if (word.find_first_of('*') < string::npos)
+        {
+            vector<string> wordSplit = splitPharse(word);
+
+            continue;
+        }
+
+        if (word[0] == '\"')
+        {
+            word.erase(word.begin());
+            word.pop_back();
+            vector<string> wordSplit = splitPharse(word);
+            unordered_map<int, int> pharseMap = handleExact(wordSplit, trie, fileData);
+
+            if (currentOperator == "" || currentOperator == "OR")
+                mergeMap(word, pharseMap, resultMap);
+            else
+                intersectMap(word, pharseMap, resultMap);
+
+            continue;
+        }
+
+        if (isStartWiths(word, "intitle:"))
+        {
+            word.erase(word.begin() + 8);
+            unordered_map<string, unordered_map<int, int>> wordMap = handleIntitle(word, trie, fileData);
+
+            if (currentOperator == "" || currentOperator == "OR")
+                for (pair<string, unordered_map<int, int>> wordInfo : wordMap)
+                    mergeMap(wordInfo.first, wordInfo.second, resultMap);
+
+            else
+                for (pair<string, unordered_map<int, int>> wordInfo : wordMap)
+                    intersectMap(wordInfo.first, wordInfo.second, resultMap);
+
+            currentOperator = "";
+            continue;
+        }
+
+        if (isStartWiths(word, "filetype:"))
+        {
+            word.erase(word.begin() + 9);
+
+            continue;
+        }
+
+        unordered_map<int, int> wordMap = trie.search(word);
+
+        if (currentOperator == "" || currentOperator == "OR")
+            mergeMap(word, wordMap, resultMap);
+        else
+            intersectMap(word, wordMap, resultMap);
+
+        currentOperator = "";
+    }
+
+    return resultMap;
 }
 
 /*Range function
