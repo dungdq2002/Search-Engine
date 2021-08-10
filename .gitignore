@@ -35,3 +35,5 @@ test.cpp
 
 .vs/
 .vscode/
+
+*.DS_Store
