@@ -10,6 +10,7 @@
 #include <fstream>
 #include "read.h"
 #include "operator.h"
+#include "normalize.h"
 using namespace std;
 
 COORD cursorPosition;
@@ -70,24 +71,35 @@ bool isBetterResult(RESULT_PAIR &p1, RESULT_PAIR &p2)
     return p1.second.size() > p2.second.size();
 }
 
-void print5BestResult(RESULT_MAP &resultMap, vector<string> &fileName)
+void print5BestResult_highlight(RESULT_MAP &resultMap, vector<vector<string>> &fileData)
 {
     vector<RESULT_PAIR> resultVector;
     for (RESULT_PAIR resultPair : resultMap)
         resultVector.push_back(resultPair);
+
     sort(resultVector.begin(), resultVector.end(), isBetterResult);
+
     for (int i = 0; i < 5; ++i)
     {
-        cout << "File " << resultVector[i].first << ":\n| ";
+        int fileID = resultVector[i].first;
+
+        cout << "File " << fileID << ":\n| ";
         for (pair<string, int> wordInfo : resultVector[i].second)
             cout << wordInfo.first << ": " << wordInfo.second << " | ";
         cout << endl;
 
-        ifstream fin;
-        fin.open("sample_data/" + fileName[resultVector[i].first]);
-        if (fin.is_open())
-        {
-        }
+        vector<string> yeu_and_Dung_rat_nhieu = fileData[fileID];
+
+        for (pair<string, int> Dung_gay : resultVector[i].second)
+            if (Dung_gay.first.find_first_of(" ") == string::npos)
+            {
+                vector<string>::iterator tim_thay_roi = find(yeu_and_Dung_rat_nhieu.begin(), yeu_and_Dung_rat_nhieu.end(), Dung_gay.first);
+            }
+            else
+            {
+                vector<string> toi_da_tram_cam = splitPharse(Dung_gay.first);
+                vector<string>::iterator tim_thay_roi = find(yeu_and_Dung_rat_nhieu.begin(), yeu_and_Dung_rat_nhieu.end(), toi_da_tram_cam[0]);
+            }
     }
 }
 

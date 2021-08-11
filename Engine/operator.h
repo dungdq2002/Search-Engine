@@ -167,7 +167,28 @@ RESULT_MAP handleWildcard(vector<string> words, TRIE &trie, vector<vector<string
     return result;
 }
 
-RESULT_MAP handleInput(const string &inputStr, TRIE &trie, SYNONYM_DATA &synonymData, vector<vector<string>> &fileData)
+string completeWildcard(vector<string> &splitedWord, string &wildcard)
+{
+    vector<string>::iterator found = find(splitedWord.begin(), splitedWord.end(), "*");
+    *found = wildcard;
+
+    string result = "";
+    for (string word : splitedWord)
+        result += word + " ";
+
+    *found = "*";
+
+    result.pop_back();
+    return result;
+}
+
+string getFiletype(int &fileID, vector<string> &fileName)
+{
+    size_t dotPos = fileName[fileID].find_last_of(".");
+    return fileName[fileID].substr(dotPos + 1, fileName[fileID].length() - 1 - dotPos);
+}
+
+RESULT_MAP handleInput(const string &inputStr, TRIE &trie, SYNONYM_DATA &synonymData, vector<vector<string>> &fileData, vector<string> &fileName)
 {
     RESULT_MAP resultMap;
     vector<string> words = splitInput(inputStr);
@@ -221,6 +242,24 @@ RESULT_MAP handleInput(const string &inputStr, TRIE &trie, SYNONYM_DATA &synonym
         {
             vector<string> wordSplit = splitPharse(word);
 
+            RESULT_MAP pharseMap = handleWildcard(wordSplit, trie, fileData);
+
+            if (currentOperator == "" || currentOperator == "OR")
+                for (RESULT_PAIR fileInfo : pharseMap)
+                    for (pair<string, int> wordInfo : fileInfo.second)
+                        resultMap[fileInfo.first][completeWildcard(wordSplit, wordInfo.first)] = wordInfo.second;
+            else
+                for (RESULT_PAIR fileInfo : resultMap)
+                {
+                    RESULT_MAP::iterator found = find(pharseMap.begin(), pharseMap.end(), fileInfo.first);
+
+                    if (found != pharseMap.end())
+                        for (pair<string, int> wordInfo : found->second)
+                            resultMap[fileInfo.first][completeWildcard(wordSplit, wordInfo.first)] = wordInfo.second;
+                    else
+                        resultMap.erase(fileInfo.first);
+                }
+
             continue;
         }
 
@@ -259,6 +298,10 @@ RESULT_MAP handleInput(const string &inputStr, TRIE &trie, SYNONYM_DATA &synonym
         if (isStartWiths(word, "filetype:"))
         {
             word.erase(word.begin() + 9);
+
+            for (RESULT_PAIR fileInfo : resultMap)
+                if (getFiletype(fileInfo.first, fileName) != word)
+                    resultMap.erase(fileInfo.first);
 
             continue;
         }
