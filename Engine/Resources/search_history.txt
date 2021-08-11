@@ -30,3 +30,56 @@ NEW AND YEAR
 ~get
 ~begin
 get
+year
+year
+desperate hunt
+desperate hunt
+"seperate hunt
+"seperate hunt"
+year
+"seperate hunt"
+"acknowledge that"
+acknowledge
+acknowledged
+"acknowledge that"
+"acknowledge that"
+"acknowledge that"
+"acknowledged that"
+"acknowledged that"
+"acknowledged that"
+"Vu Lan"
+"vu lan"
+someone
+apple
+banana
+think
+think
+~get
+"Vu Lan" ~get
+hunt * betrayal
+hunt * betrayal
+hunt * betrayal
+hunt * betrayal
+hunt * betrayal
+hunt * betrayal
+hunt * betrayal
+hunt * betrayal
+hunt * betrayal
+hunt * betrayal
+hunt * betrayal
+hunt * betrayal
+hunt * betrayal
+hunt * betrayal
+hunt * betrayal
+hunt * betrayal
+hunt * betrayal
+hunt * betrayal
+hunt * betrayal
+hunt * betrayal
+west * piracy
+west * piracy
+west * piracy
+west * piracy
+$100
+intitle:port 
+filetype:txt west * piracy

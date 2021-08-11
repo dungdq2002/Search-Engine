@@ -22,10 +22,11 @@ int _(char c)
         return c - '0' + 3;
     if (isalpha(c))
         return c - 'a' + 13;
+    return 39;
     assert(false);
 }
 
-#define __MAXCHAR 39
+#define __MAXCHAR 40
 class TRIE
 {
 private:

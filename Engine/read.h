@@ -75,6 +75,7 @@ void importFile(TRIE &Trie, string folder, vector<string> &fileName, vector<vect
         string _fileName = fs::path(file).filename().string();
         fileName.push_back(_fileName);
 
+
         // Scan file data
         ifstream inp(file.path());
         string s;
@@ -95,12 +96,9 @@ void importFile(TRIE &Trie, string folder, vector<string> &fileName, vector<vect
 void scanSearchHistory(TRIE_SEARCHING_HISTORY &Trie)
 {
     ifstream inp("Resources/search_history.txt");
-    cerr << "hello\n";
     for (string s; getline(inp, s);)
     {
-        cerr << "hello - " << s << '\n';
         Trie.insert(s);
-        cerr << "done " << s << '\n';
     }
     // cerr << "done all!";
 }

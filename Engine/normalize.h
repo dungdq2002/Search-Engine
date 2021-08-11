@@ -90,7 +90,7 @@ vector<string> splitInput(const string &inputStr)
             result.emplace_back(inputStr.substr(startPos, endPos - startPos + 1));
             if (endPos == string::npos)
                 return result;
-            startPos = endPos + 2;
+            startPos = endPos + 1;
             endPos = inputStr.find_first_of(' ', startPos);
             continue;
         }
@@ -177,7 +177,7 @@ vector<string> splitInput(const string &inputStr)
             result.emplace_back(tempStr);
         }
 
-        else
+        else if (tempStr != " ")
         {
             transform(tempStr.begin(), tempStr.end(), tempStr.begin(), ::tolower);
             result.emplace_back(tempStr);

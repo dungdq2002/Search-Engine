@@ -38,6 +38,8 @@ unordered_map<string, unordered_map<int, int>> handleIntitle(const string &phars
                 result[word][wordInfo.first] = countWord;
         }
     }
+
+    return result;
 }
 
 void mergeMap(const string &word, unordered_map<int, int> &wordMap, RESULT_MAP &resultMap)
@@ -106,7 +108,7 @@ unordered_map<int, int> handleExact(vector<string> &words, TRIE &trie, vector<ve
             if (isExact)
                 ++result[fileID];
 
-            found = find(found, fileData[fileID].end(), words[0]);
+            found = find(found+1, fileData[fileID].end(), words[0]);
         }
     }
 
@@ -144,26 +146,35 @@ RESULT_MAP handleWildcard(vector<string> words, TRIE &trie, vector<vector<string
 
             for (int i = startPos + 1; i < words.size(); ++i)
             {
+                if (found + i == words.end()) {
+                    isExact = false;
+                    break;
+                }
+
                 if (i == wildcardPos)
                     continue;
 
                 if (*(found + i) != words[i])
                 {
+                    // cout << *(found + i) << ' ' << words[i] << '\n';
                     isExact = false;
                     break;
                 }
             }
 
+
             if (isExact)
             {
-                string wildcard = *(fileData[fileID].begin() + wildcardPos - startPos);
+                string wildcard = *(found + wildcardPos - startPos);
                 ++result[fileID][wildcard];
             }
 
-            found = find(found, fileData[fileID].end(), words[startPos]);
+            // cout << "im here " << isExact << '\n';
+            found = find(found+1, fileData[fileID].end(), words[startPos]);
         }
     }
 
+    // cout << " size result " << result.size() << '\n';
     return result;
 }
 
@@ -251,7 +262,10 @@ RESULT_MAP handleInput(const string &inputStr, TRIE &trie, SYNONYM_DATA &synonym
             else
                 for (RESULT_PAIR fileInfo : resultMap)
                 {
-                    RESULT_MAP::iterator found = find(pharseMap.begin(), pharseMap.end(), fileInfo.first);
+                    // RESULT_MAP::iterator found = find(pharseMap.begin(), pharseMap.end(), fileInfo.first);
+                    int huhu = fileInfo.first;
+                    auto found = pharseMap.find(huhu);
+                    // RESULT_MAP::iterator found = pharseMap.begin();
 
                     if (found != pharseMap.end())
                         for (pair<string, int> wordInfo : found->second)
@@ -269,7 +283,6 @@ RESULT_MAP handleInput(const string &inputStr, TRIE &trie, SYNONYM_DATA &synonym
             word.pop_back();
             vector<string> wordSplit = splitPharse(word);
             unordered_map<int, int> pharseMap = handleExact(wordSplit, trie, fileData);
-
             if (currentOperator == "" || currentOperator == "OR")
                 mergeMap(word, pharseMap, resultMap);
             else
