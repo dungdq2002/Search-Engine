@@ -103,7 +103,7 @@ void print5BestResult_highlight(RESULT_MAP &resultMap, vector<vector<string>> &f
     }
 }
 
-void searchBox(TRIE &trie, SYNONYM_DATA &synonymData, vector<vector<string>> &fileData)
+void searchBox(TRIE &trie, SYNONYM_DATA &synonymData, vector<vector<string>> &fileData, vector<string> &fileName)
 // void searchBox()
 {
     ofstream historyFile("Resources/search_history.txt", ios::app);
@@ -172,17 +172,8 @@ void searchBox(TRIE &trie, SYNONYM_DATA &synonymData, vector<vector<string>> &fi
         {
             system("cls");
             cout << " Searching ... " << curSearch << '\n';
-            auto res = handleInput(curSearch, trie, synonymData, fileData);
-            cout << "Size " << res.size() << '\n';
-            for (auto it : res)
-            {
-                cout << "File id: " << it.first << '\n';
-                for (auto huhu : it.second)
-                {
-                    cout << "Word: " << huhu.first << ' ';
-                    cout << "Count: " << huhu.second << '\n';
-                }
-            }
+            auto res = handleInput(curSearch, trie, synonymData, fileData, fileName);
+            print5BestResult_highlight(res, fileData);
             // searching(curSearch);
             Trie.insert(curSearch);
             historyFile << curSearch << '\n';
