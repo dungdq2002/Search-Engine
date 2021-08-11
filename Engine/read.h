@@ -17,50 +17,49 @@ struct SYNONYM_DATA
 {
     unordered_map<string, int> idDict;
     vector<vector<string>> dict;
-    SYNONYM_DATA()
+
+    void splitSynonym(const string &inputStr, int indexInDict)
     {
-        read_file();
-    }
-
-    void read_file()
-    {
-        fstream fin;
-
-        fin.open("Resources/data.csv", ios::in);
-
-        vector<string> row;
-        string line, word, temp = " ";
-
-        int rowID = 0, tmp;
-        int loop = 2;
-        while (fin >> temp)
+        vector<string> result;
+        size_t startPos = 0, endPos = inputStr.find_first_of(',');
+        while (endPos <= string::npos)
         {
-            if (loop == 0) break;
-            loop--;
-            row.clear();
-            row.push_back(temp);
-            cout << " im here " << temp << '\n';
-            getline(fin, line);
+            string tempStr = inputStr.substr(startPos, endPos - startPos);
+            transform(tempStr.begin(), tempStr.end(), tempStr.begin(), ::tolower);
 
-            stringstream s(line);
+            idDict[tempStr] = indexInDict;
+            result.push_back(tempStr);
 
-            tmp = 0;
-            while (getline(s, word, ','))
+            if (endPos == string::npos)
             {
-                cout << "huhu " << word << '\n';
-                if (tmp > 0)
-                {
-                    row.push_back(word);
-                    idDict[word] = rowID;
-                }
-                tmp++;
+                dict.push_back(result);
+                return;
             }
 
-            dict.push_back(row);
+            startPos = endPos + 1;
+            endPos = inputStr.find_first_of(',', startPos);
+        }
+    }
 
-            rowID++;
-            if (rowID == 10)
-                break;
+    void importData()
+    {
+        dict.push_back({});
+
+        ifstream fin;
+        fin.open("Resources/Synonym.csv");
+        if (fin.is_open())
+        {
+            int index = 0;
+
+            while (!fin.eof())
+            {
+                ++index;
+
+                string synonym;
+                fin >> synonym;
+
+                splitSynonym(synonym, index);
+            }
         }
     }
 };
