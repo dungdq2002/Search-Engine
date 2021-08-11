@@ -7,6 +7,9 @@
 
 #include <vector>
 
+typedef unordered_map<int, unordered_map<string, int>> RESULT_MAP;
+typedef pair<int, unordered_map<string, int>> RESULT_PAIR;
+
 const int titleSize = 10;
 
 unordered_map<string, unordered_map<int, int>> handleSynonym(const string &word, TRIE &trie, SYNONYM_DATA &synonymData)
@@ -37,37 +40,33 @@ unordered_map<string, unordered_map<int, int>> handleIntitle(const string &phars
     }
 }
 
-void mergeMap(const string &word, unordered_map<int, int> &wordMap, unordered_map<int, unordered_map<string, int>> &resultMap)
+void mergeMap(const string &word, unordered_map<int, int> &wordMap, RESULT_MAP &resultMap)
 {
     for (pair<int, int> wordInfo : wordMap)
         resultMap[wordInfo.first][word] = max(wordInfo.second, resultMap[wordInfo.first][word]);
 }
 
-void intersectMap(const string &word, unordered_map<int, int> &wordMap, unordered_map<int, unordered_map<string, int>> &resultMap)
+void intersectMap(const string &word, unordered_map<int, int> &wordMap, RESULT_MAP &resultMap)
 {
-    for (pair<int, int> wordInfo : wordMap)
+    for (RESULT_PAIR fileInfo : resultMap)
     {
-        unordered_map<int, unordered_map<string, int>>::iterator find = resultMap.find(wordInfo.first);
-
-        if (find != resultMap.end())
+        int fileID = fileInfo.first;
+        unordered_map<int, int>::iterator found = wordMap.find(fileID);
+        if (found != wordMap.end())
         {
-            find->second[word] += wordInfo.second;
-
-            if (find->second[word] == 0)
-                find->second.erase(word);
+            if (resultMap[fileID].find(word) == resultMap[fileID].end())
+                resultMap[fileID][word] = wordMap[fileID];
         }
+        else
+            resultMap.erase(fileID);
     }
-
-    for (auto it: resultMap) 
-        if (wordMap.find(it.first) == wordMap.end())
-            resultMap.erase(it.first);
 }
 
-void eliminateMap(const string &word, unordered_map<int, int> &wordMap, unordered_map<int, unordered_map<string, int>> &resultMap)
+void eliminateMap(const string &word, unordered_map<int, int> &wordMap, RESULT_MAP &resultMap)
 {
     for (pair<int, int> wordInfo : wordMap)
     {
-        unordered_map<int, unordered_map<string, int>>::iterator find = resultMap.find(wordInfo.first);
+        RESULT_MAP::iterator find = resultMap.find(wordInfo.first);
 
         if (find != resultMap.end())
             resultMap.erase(find);
@@ -77,7 +76,7 @@ void eliminateMap(const string &word, unordered_map<int, int> &wordMap, unordere
 unordered_map<int, int> handleExact(vector<string> &words, TRIE &trie, vector<vector<string>> &fileData)
 {
     unordered_map<int, int> result;
-    unordered_map<int, unordered_map<string, int>> allFiles;
+    RESULT_MAP allFiles;
 
     for (string word : words)
     {
@@ -85,7 +84,7 @@ unordered_map<int, int> handleExact(vector<string> &words, TRIE &trie, vector<ve
         mergeMap(word, wordInfo, allFiles);
     }
 
-    for (pair<int, unordered_map<string, int>> fileInfo : allFiles)
+    for (RESULT_PAIR fileInfo : allFiles)
     {
         if (fileInfo.second.size() < words.size())
             continue;
@@ -114,10 +113,10 @@ unordered_map<int, int> handleExact(vector<string> &words, TRIE &trie, vector<ve
     return result;
 }
 
-unordered_map<int, unordered_map<string, int>> handleWildcard(vector<string> words, TRIE &trie, vector<vector<string>> &fileData)
+RESULT_MAP handleWildcard(vector<string> words, TRIE &trie, vector<vector<string>> &fileData)
 {
-    unordered_map<int, unordered_map<string, int>> result;
-    unordered_map<int, unordered_map<string, int>> allFiles;
+    RESULT_MAP result;
+    RESULT_MAP allFiles;
 
     for (string word : words)
     {
@@ -131,7 +130,7 @@ unordered_map<int, unordered_map<string, int>> handleWildcard(vector<string> wor
     int wildcardPos = int(find(words.begin(), words.end(), "*") - words.begin());
     int startPos = wildcardPos == 0 ? 1 : 0;
 
-    for (pair<int, unordered_map<string, int>> fileInfo : allFiles)
+    for (RESULT_PAIR fileInfo : allFiles)
     {
         if (fileInfo.second.size() < words.size() - 1)
             continue;
@@ -168,9 +167,9 @@ unordered_map<int, unordered_map<string, int>> handleWildcard(vector<string> wor
     return result;
 }
 
-unordered_map<int, unordered_map<string, int>> handleInput(const string &inputStr, TRIE &trie, SYNONYM_DATA &synonymData, vector<vector<string>> &fileData)
+RESULT_MAP handleInput(const string &inputStr, TRIE &trie, SYNONYM_DATA &synonymData, vector<vector<string>> &fileData)
 {
-    unordered_map<int, unordered_map<string, int>> resultMap;
+    RESULT_MAP resultMap;
     vector<string> words = splitInput(inputStr);
 
     string currentOperator = "";

@@ -50,48 +50,38 @@ int getKey()
     return z;
 }
 
-struct resultData
+int getTimeOfAllWords(unordered_map<string, int> &fileInfo)
 {
-    int appearTime;
-    int fileId;
-    string keyword;
-
-    resultData(int x, string key, int y)
-    {
-        fileId = x;
-        appearTime = y;
-        keyword = key;
-    }
-};
-
-int sortedResultCmd(resultData a, resultData b)
-{
-    return a.appearTime > b.appearTime;
+    int result = 0;
+    for (pair<string, int> wordInfo : fileInfo)
+        result += wordInfo.second;
+    return result;
 }
 
-void outResult(unordered_map<int, unordered_map<string, int>> result)
+bool isBetterResult(RESULT_PAIR &p1, RESULT_PAIR &p2)
 {
-    vector<resultData> sortedResult;
+    int timeOfAllWords1 = getTimeOfAllWords(p1.second);
+    int timeOfAllWords2 = getTimeOfAllWords(p2.second);
 
-    for (auto id = result.begin(); id != result.end(); id++)
+    if (timeOfAllWords1 > timeOfAllWords2)
+        return true;
+    if (timeOfAllWords1 < timeOfAllWords2)
+        return false;
+    return p1.second.size() > p2.second.size();
+}
+
+void print5BestResult(RESULT_MAP &resultMap)
+{
+    vector<RESULT_PAIR> resultVector;
+    for (RESULT_PAIR resultPair : resultMap)
+        resultVector.push_back(resultPair);
+    sort(resultVector.begin(), resultVector.end(), isBetterResult);
+    for (int i = 0; i < 5; ++i)
     {
-        unordered_map<string, int> file = (*id).second;
-        for (auto key : file)
-        {
-            resultData data = resultData((*id).first, key.first, key.second);
-            sortedResult.push_back(data);
-        }
-    }
-
-    sort(sortedResult.begin(), sortedResult.end(), sortedResultCmd);
-
-    cout << "TOP 5 result:" << endl;
-
-    int length = sortedResult.size();
-    for (int i = 0; i < min(5, length); i++)
-    {
-        resultData endResult = sortedResult[i];
-        cout << "Result " << i << ": " << endResult.keyword << " appear in " << endResult.fileId << " " << endResult.appearTime << " times" << endl;
+        cout << "File " << resultVector[i].first << ":\n";
+        for (pair<string, int> wordInfo : resultVector[i].second)
+            cout << "     " << wordInfo.first << ": " << wordInfo.second << endl;
+        cout << endl;
     }
 }
 
@@ -166,9 +156,11 @@ void searchBox(TRIE &trie, SYNONYM_DATA &synonymData, vector<vector<string>> &fi
             cout << " Searching ... " << curSearch << '\n';
             auto res = handleInput(curSearch, trie, synonymData, fileData);
             cout << "Size " << res.size() << '\n';
-            for (auto it: res) {
+            for (auto it : res)
+            {
                 cout << "File id: " << it.first << '\n';
-                for (auto huhu: it.second) {
+                for (auto huhu : it.second)
+                {
                     cout << "Word: " << huhu.first << ' ';
                     cout << "Count: " << huhu.second << '\n';
                 }
