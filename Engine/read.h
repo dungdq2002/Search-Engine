@@ -61,6 +61,7 @@ struct SYNONYM_DATA
                 splitSynonym(synonym, index);
             }
         }
+        fin.close();
     }
 };
 

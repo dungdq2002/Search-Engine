@@ -276,26 +276,4 @@ RESULT_MAP handleInput(const string &inputStr, TRIE &trie, SYNONYM_DATA &synonym
     return resultMap;
 }
 
-/*Range function
-void findRange1(int l, int r){
-    vector <int> a;
-    findRange2(root, 0, l, r, a);
-    cout <<"Number in range: " << l << " to " << r << ": ";
-    for(auto x: a) cout << x << " ";
-}
-
-void findRange2(TrieNode *root, int cur, int l, int r, vector <int> &d){
-    if(root -> isEndOfWord){
-        if(l <= cur && cur <= r)
-            d.push_back(cur);
-    }
-    if(cur > r) return;
-    if(!root) return;
-    for(int i = 0; i <= 9; i++){
-        int v = i + '0';
-        if(root -> child[v] == nullptr) continue;
-        findRange2(root -> child[v], cur * 10 + i, l, r, d);
-    }
-}
-*/
 #endif

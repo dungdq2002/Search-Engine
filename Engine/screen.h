@@ -70,7 +70,7 @@ bool isBetterResult(RESULT_PAIR &p1, RESULT_PAIR &p2)
     return p1.second.size() > p2.second.size();
 }
 
-void print5BestResult(RESULT_MAP &resultMap)
+void print5BestResult(RESULT_MAP &resultMap, vector<string> &fileName)
 {
     vector<RESULT_PAIR> resultVector;
     for (RESULT_PAIR resultPair : resultMap)
@@ -78,10 +78,16 @@ void print5BestResult(RESULT_MAP &resultMap)
     sort(resultVector.begin(), resultVector.end(), isBetterResult);
     for (int i = 0; i < 5; ++i)
     {
-        cout << "File " << resultVector[i].first << ":\n";
+        cout << "File " << resultVector[i].first << ":\n| ";
         for (pair<string, int> wordInfo : resultVector[i].second)
-            cout << "     " << wordInfo.first << ": " << wordInfo.second << endl;
+            cout << wordInfo.first << ": " << wordInfo.second << " | ";
         cout << endl;
+
+        ifstream fin;
+        fin.open("sample_data/" + fileName[resultVector[i].first]);
+        if (fin.is_open())
+        {
+        }
     }
 }
 
