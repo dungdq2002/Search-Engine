@@ -71,19 +71,21 @@ bool isBetterResult(RESULT_PAIR &p1, RESULT_PAIR &p2)
     return p1.second.size() > p2.second.size();
 }
 
-void printSpecial(string s) {
+void printSpecial(string s)
+{
     SetConsoleTextAttribute(console, 9);
     cout << s << ' ';
     SetConsoleTextAttribute(console, 15);
 }
 
-void print5BestResult_highlight(RESULT_MAP &resultMap, vector<vector<string>> &fileData, vector <string> &fileName)
+void print5BestResult_highlight(RESULT_MAP &resultMap, vector<vector<string>> &fileData, vector<string> &fileName)
 {
     vector<RESULT_PAIR> resultVector;
     for (RESULT_PAIR resultPair : resultMap)
         resultVector.push_back(resultPair);
 
-    if (resultVector.empty()) {
+    if (resultVector.empty())
+    {
         cout << "Not found!\n";
         return;
     }
@@ -103,13 +105,13 @@ void print5BestResult_highlight(RESULT_MAP &resultMap, vector<vector<string>> &f
         cout << endl;
 
         vector<string> em_dang_cam_data_ne = fileData[fileID];
-// A * C
-// A B C
-// A B C
-        unordered_map <string, bool> huhu;
+        // A * C
+        // A B C
+        // A B C
+        unordered_map<string, bool> huhu;
 
         bool truong_hop_db = false;
-        vector <string> bugdemkhuya;
+        vector<string> bugdemkhuya;
 
         for (pair<string, int> Dung_gay : resultVector[i].second)
             if (Dung_gay.first.find_first_of(" ") == string::npos)
@@ -117,7 +119,7 @@ void print5BestResult_highlight(RESULT_MAP &resultMap, vector<vector<string>> &f
                 // vector<string>::iterator tim_thay_roi = find(em_dang_cam_data_ne.begin(), em_dang_cam_data_ne.end(), Dung_gay.first);
                 // if (tim_thay_roi == em_dang_cam_data_ne.begin()) {
                 //     SetConsoleTextAttribute(console, 9);
-                //     cout << 
+                //     cout <<
                 // }
                 huhu[Dung_gay.first] = true;
             }
@@ -125,13 +127,15 @@ void print5BestResult_highlight(RESULT_MAP &resultMap, vector<vector<string>> &f
             {
                 vector<string> toi_da_tram_cam = splitPharse(Dung_gay.first);
                 // vector<string>::iterator tim_thay_roi = find(em_dang_cam_data_ne.begin(), em_dang_cam_data_ne.end(), toi_da_tram_cam[0]);
-                for (auto it : toi_da_tram_cam) huhu[it] = true;
+                for (auto it : toi_da_tram_cam)
+                    huhu[it] = true;
                 bugdemkhuya = toi_da_tram_cam;
                 truong_hop_db = true;
             }
 
         auto tao_da_tim_ra = em_dang_cam_data_ne.end();
-        if (truong_hop_db) {
+        if (truong_hop_db)
+        {
             auto tao_di_tim = find(em_dang_cam_data_ne.begin(), em_dang_cam_data_ne.end(), bugdemkhuya[0]);
 
             while (tao_di_tim != em_dang_cam_data_ne.end())
@@ -140,7 +144,8 @@ void print5BestResult_highlight(RESULT_MAP &resultMap, vector<vector<string>> &f
 
                 for (int i = 0; i < bugdemkhuya.size(); ++i)
                 {
-                    if (tao_di_tim + i == bugdemkhuya.end()) {
+                    if (tao_di_tim + i == bugdemkhuya.end())
+                    {
                         isExact = false;
                         break;
                     }
@@ -155,20 +160,24 @@ void print5BestResult_highlight(RESULT_MAP &resultMap, vector<vector<string>> &f
 
                 // cout << tao_di_tim - em_dang_cam_data_ne.begin() << '\n';
 
-                if (isExact) {
+                if (isExact)
+                {
                     tao_da_tim_ra = tao_di_tim;
                     break;
                 }
 
                 // cout << "im here " << isExact << '\n';
-                tao_di_tim = find(tao_di_tim+1, em_dang_cam_data_ne.end(), bugdemkhuya[0]);
+                tao_di_tim = find(tao_di_tim + 1, em_dang_cam_data_ne.end(), bugdemkhuya[0]);
                 // cout << tao_di_tim - em_dang_cam_data_ne.begin() << '\n';
             }
 
-            if (tao_di_tim != em_dang_cam_data_ne.end()) {
-                if (tao_da_tim_ra == em_dang_cam_data_ne.begin()) {
+            if (tao_di_tim != em_dang_cam_data_ne.end())
+            {
+                if (tao_da_tim_ra == em_dang_cam_data_ne.begin())
+                {
                     printSpecial(*tao_da_tim_ra);
-                    for (auto cai_gi_vay_troi = tao_da_tim_ra + 1; cai_gi_vay_troi < tao_da_tim_ra + 7 && cai_gi_vay_troi < em_dang_cam_data_ne.end(); cai_gi_vay_troi++) {
+                    for (auto cai_gi_vay_troi = tao_da_tim_ra + 1; cai_gi_vay_troi < tao_da_tim_ra + 7 && cai_gi_vay_troi < em_dang_cam_data_ne.end(); cai_gi_vay_troi++)
+                    {
                         if (!huhu[*cai_gi_vay_troi])
                             cout << *cai_gi_vay_troi << ' ';
                         else
@@ -176,16 +185,19 @@ void print5BestResult_highlight(RESULT_MAP &resultMap, vector<vector<string>> &f
                     }
                     cout << "...";
                 }
-                else {
+                else
+                {
                     cout << "... ";
-                    for (auto cai_gi_vay_troi = tao_da_tim_ra - min(tao_da_tim_ra - em_dang_cam_data_ne.begin(), 6); cai_gi_vay_troi < tao_da_tim_ra; cai_gi_vay_troi++) {
+                    for (auto cai_gi_vay_troi = tao_da_tim_ra - min(tao_da_tim_ra - em_dang_cam_data_ne.begin(), 6); cai_gi_vay_troi < tao_da_tim_ra; cai_gi_vay_troi++)
+                    {
                         if (!huhu[*cai_gi_vay_troi])
                             cout << *cai_gi_vay_troi << ' ';
                         else
                             printSpecial(*cai_gi_vay_troi);
                     }
                     printSpecial(*tao_da_tim_ra);
-                    for (auto cai_gi_vay_troi = tao_da_tim_ra + 1; cai_gi_vay_troi < tao_da_tim_ra + 7 && cai_gi_vay_troi < em_dang_cam_data_ne.end(); cai_gi_vay_troi++) {
+                    for (auto cai_gi_vay_troi = tao_da_tim_ra + 1; cai_gi_vay_troi < tao_da_tim_ra + 7 && cai_gi_vay_troi < em_dang_cam_data_ne.end(); cai_gi_vay_troi++)
+                    {
                         if (!huhu[*cai_gi_vay_troi])
                             cout << *cai_gi_vay_troi << ' ';
                         else
@@ -196,13 +208,17 @@ void print5BestResult_highlight(RESULT_MAP &resultMap, vector<vector<string>> &f
             }
         }
 
-        if (tao_da_tim_ra == em_dang_cam_data_ne.end()) {
+        if (tao_da_tim_ra == em_dang_cam_data_ne.end())
+        {
 
-            for (auto it : huhu) {
+            for (auto it : huhu)
+            {
                 vector<string>::iterator tim_thay_roi = find(em_dang_cam_data_ne.begin(), em_dang_cam_data_ne.end(), it.first);
-                if (tim_thay_roi == em_dang_cam_data_ne.begin()) {
+                if (tim_thay_roi == em_dang_cam_data_ne.begin())
+                {
                     printSpecial(it.first);
-                    for (auto cai_gi_vay_troi = tim_thay_roi + 1; cai_gi_vay_troi < tim_thay_roi + 7 && cai_gi_vay_troi < em_dang_cam_data_ne.end(); cai_gi_vay_troi++) {
+                    for (auto cai_gi_vay_troi = tim_thay_roi + 1; cai_gi_vay_troi < tim_thay_roi + 7 && cai_gi_vay_troi < em_dang_cam_data_ne.end(); cai_gi_vay_troi++)
+                    {
                         if (!huhu[*cai_gi_vay_troi])
                             cout << *cai_gi_vay_troi << ' ';
                         else
@@ -210,16 +226,19 @@ void print5BestResult_highlight(RESULT_MAP &resultMap, vector<vector<string>> &f
                     }
                     cout << "...";
                 }
-                else {
+                else
+                {
                     cout << "... ";
-                    for (auto cai_gi_vay_troi = tim_thay_roi - min(tim_thay_roi - em_dang_cam_data_ne.begin(), 6); cai_gi_vay_troi < tim_thay_roi; cai_gi_vay_troi++) {
+                    for (auto cai_gi_vay_troi = tim_thay_roi - min(tim_thay_roi - em_dang_cam_data_ne.begin(), 6); cai_gi_vay_troi < tim_thay_roi; cai_gi_vay_troi++)
+                    {
                         if (!huhu[*cai_gi_vay_troi])
                             cout << *cai_gi_vay_troi << ' ';
                         else
                             printSpecial(*cai_gi_vay_troi);
                     }
                     printSpecial(it.first);
-                    for (auto cai_gi_vay_troi = tim_thay_roi + 1; cai_gi_vay_troi < tim_thay_roi + 7 && cai_gi_vay_troi < em_dang_cam_data_ne.end(); cai_gi_vay_troi++) {
+                    for (auto cai_gi_vay_troi = tim_thay_roi + 1; cai_gi_vay_troi < tim_thay_roi + 7 && cai_gi_vay_troi < em_dang_cam_data_ne.end(); cai_gi_vay_troi++)
+                    {
                         if (!huhu[*cai_gi_vay_troi])
                             cout << *cai_gi_vay_troi << ' ';
                         else
@@ -230,9 +249,6 @@ void print5BestResult_highlight(RESULT_MAP &resultMap, vector<vector<string>> &f
                 break;
             }
         }
-
-
-
 
         cout << '\n';
         cout << "----------------------------------------------------\n\n";
@@ -318,7 +334,8 @@ void searchBox(TRIE &trie, SYNONYM_DATA &synonymData, vector<vector<string>> &fi
         }
         else if (key == BACKSPACE)
         {
-            if (curSearch.size()) curSearch.pop_back();
+            if (curSearch.size())
+                curSearch.pop_back();
             system("cls");
             curLine = -1;
         }

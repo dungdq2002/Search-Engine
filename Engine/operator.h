@@ -108,7 +108,7 @@ unordered_map<int, int> handleExact(vector<string> &words, TRIE &trie, vector<ve
             if (isExact)
                 ++result[fileID];
 
-            found = find(found+1, fileData[fileID].end(), words[0]);
+            found = find(found + 1, fileData[fileID].end(), words[0]);
         }
     }
 
@@ -146,7 +146,8 @@ RESULT_MAP handleWildcard(vector<string> words, TRIE &trie, vector<vector<string
 
             for (int i = startPos + 1; i < words.size(); ++i)
             {
-                if (found + i == words.end()) {
+                if (found + i == words.end())
+                {
                     isExact = false;
                     break;
                 }
@@ -162,7 +163,6 @@ RESULT_MAP handleWildcard(vector<string> words, TRIE &trie, vector<vector<string
                 }
             }
 
-
             if (isExact)
             {
                 string wildcard = *(found + wildcardPos - startPos);
@@ -170,7 +170,7 @@ RESULT_MAP handleWildcard(vector<string> words, TRIE &trie, vector<vector<string
             }
 
             // cout << "im here " << isExact << '\n';
-            found = find(found+1, fileData[fileID].end(), words[startPos]);
+            found = find(found + 1, fileData[fileID].end(), words[startPos]);
         }
     }
 
@@ -205,6 +205,7 @@ RESULT_MAP handleInput(const string &inputStr, TRIE &trie, SYNONYM_DATA &synonym
     vector<string> words = splitInput(inputStr);
 
     string currentOperator = "";
+    string filetype = "";
 
     for (string word : words)
     {
@@ -293,7 +294,7 @@ RESULT_MAP handleInput(const string &inputStr, TRIE &trie, SYNONYM_DATA &synonym
 
         if (isStartWiths(word, "intitle:"))
         {
-            word.erase(word.begin() + 8);
+            word.erase(word.begin(), word.begin() + 8);
             unordered_map<string, unordered_map<int, int>> wordMap = handleIntitle(word, trie, fileData);
 
             if (currentOperator == "" || currentOperator == "OR")
@@ -310,11 +311,8 @@ RESULT_MAP handleInput(const string &inputStr, TRIE &trie, SYNONYM_DATA &synonym
 
         if (isStartWiths(word, "filetype:"))
         {
-            word.erase(word.begin() + 9);
-
-            for (RESULT_PAIR fileInfo : resultMap)
-                if (getFiletype(fileInfo.first, fileName) != word)
-                    resultMap.erase(fileInfo.first);
+            word.erase(word.begin(), word.begin() + 9);
+            filetype = word;
 
             continue;
         }
@@ -327,6 +325,13 @@ RESULT_MAP handleInput(const string &inputStr, TRIE &trie, SYNONYM_DATA &synonym
             intersectMap(word, wordMap, resultMap);
 
         currentOperator = "";
+    }
+
+    if (filetype != "")
+    {
+        for (RESULT_PAIR fileInfo : resultMap)
+            if (getFiletype(fileInfo.first, fileName) != filetype)
+                resultMap.erase(fileInfo.first);
     }
 
     return resultMap;
