@@ -93,7 +93,9 @@ vector<string> splitInput(const string &inputStr)
             endPos = inputStr.find_first_of('\"', startPos + 1);
             result.emplace_back(inputStr.substr(startPos, endPos - startPos + 1));
             if (endPos == string::npos)
+            {
                 return result;
+            }
             startPos = endPos + 1;
             endPos = inputStr.find_first_of(' ', startPos);
             continue;
@@ -140,6 +142,10 @@ vector<string> splitInput(const string &inputStr)
                 if (endPos == string::npos)
                 {
                     result.emplace_back(tempStr);
+                    for (int i = 0; i < result.size(); ++i)
+                        for (int j = 0; j < result[i].length(); ++j)
+                            if (result[i][j] == ' ')
+                                result[i][j] = '1';
                     return result;
                 }
 
@@ -152,6 +158,12 @@ vector<string> splitInput(const string &inputStr)
 
         else if (isStartWiths(tempStr, "intitle:"))
         {
+            if (endPos == string::npos)
+            {
+                result.emplace_back(tempStr);
+
+                return result;
+            }
             startPos = endPos + 1;
             endPos = inputStr.find_first_of(' ', startPos);
 
@@ -160,17 +172,20 @@ vector<string> splitInput(const string &inputStr)
                 string tempTempStr = inputStr.substr(startPos, endPos - startPos);
 
                 if (!isOperator(tempTempStr) && !hasOperator(tempTempStr))
+                {
+                    cout << "yes\n";
                     tempStr += " " + tempTempStr;
+                }
                 else
                 {
                     startPos -= tempTempStr.length() + 1;
                     endPos -= tempTempStr.length() + 1;
                     break;
                 }
-
                 if (endPos == string::npos)
                 {
                     result.emplace_back(tempStr);
+
                     return result;
                 }
 
@@ -181,7 +196,7 @@ vector<string> splitInput(const string &inputStr)
             result.emplace_back(tempStr);
         }
 
-        else if (tempStr != " ")
+        else if (tempStr != " " && tempStr != "")
         {
             transform(tempStr.begin(), tempStr.end(), tempStr.begin(), ::tolower);
             result.emplace_back(tempStr);
