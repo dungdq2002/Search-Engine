@@ -73,6 +73,10 @@ void clean(string &s)
         t += c;
     }
     s = t;
+    if (s[0] == '$' || isdigit(s[0])) {
+        int p = s[0] == '$' ? 1 : 0;
+        while (s.size() < 10) s.insert(p, "0");
+    }
     if (__stopword__.find(s) != __stopword__.end())
         s = NONE;
 }
