@@ -7,9 +7,6 @@
 
 #include <vector>
 
-typedef unordered_map<int, unordered_map<string, int>> RESULT_MAP;
-typedef pair<int, unordered_map<string, int>> RESULT_PAIR;
-
 const int titleSize = 10;
 
 unordered_map<string, unordered_map<int, int>> handleSynonym(const string &word, TRIE &trie, SYNONYM_DATA &synonymData)
@@ -174,7 +171,6 @@ RESULT_MAP handleWildcard(vector<string> words, TRIE &trie, vector<vector<string
         }
     }
 
-    // cout << " size result " << result.size() << '\n';
     return result;
 }
 
@@ -248,6 +244,35 @@ RESULT_MAP handleInput(const string &inputStr, TRIE &trie, SYNONYM_DATA &synonym
 
             currentOperator = "";
             continue;
+        }
+
+        if (word.find_first_of("..") < string::npos) {
+            RESULT_MAP pharseMap;
+            int pos = word.find_first_of("..");
+            string left = word.substr(0, pos);
+            string right = word.substr(pos+2, word.size() - (pos + 2));
+            cout << left << ' ' << right << '\n';
+            // clean(left), clean(right);
+            trie.inRange(left, right, pharseMap);
+            if (currentOperator == "" || currentOperator == "OR") {
+                // merge pha xe` voi res
+                for (auto PAIR : pharseMap) {
+                    for (auto MAP : PAIR.second)
+                        resultMap[PAIR.first][MAP.first] += MAP.second;
+                }
+            }
+            else {
+                // intersect phe xe` voi res
+                for (auto PAIR : resultMap) {
+                    if (pharseMap.find(PAIR.first) == pharseMap.end()) {
+                        resultMap.erase(PAIR.first);
+                    }
+                    else {
+                        for (auto MAP : pharseMap[PAIR.first])
+                            resultMap[PAIR.first][MAP.first] += MAP.second;
+                    }
+                }
+            }
         }
 
         if (word.find_first_of('*') < string::npos)

@@ -1,4 +1,4 @@
-/*#include "screen.h"
+#include "screen.h"
 #include "read.h"
 
 int main() {
@@ -6,13 +6,13 @@ int main() {
     TRIE Trie;
     vector <string> fileName;
     vector <vector<string>> fileData;
-    importFile(Trie, "sample-data", fileName, fileData);
+    importFile(Trie, "Search Engine-Data", fileName, fileData);
     SYNONYM_DATA synonymData;
     synonymData.importData();
     searchBox(Trie, synonymData, fileData, fileName);
     // searchBox();
     return 0;
-}*/
+}
 
 /*#include <iostream>
 #include <fstream>

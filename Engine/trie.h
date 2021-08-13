@@ -10,6 +10,9 @@
 #include <unordered_map>
 using namespace std;
 
+typedef unordered_map<int, unordered_map<string, int>> RESULT_MAP;
+typedef pair<int, unordered_map<string, int>> RESULT_PAIR;
+
 int _(char c)
 {
     if (c == '-')
@@ -55,6 +58,44 @@ private:
         cur->file[idFile]++;
     }
 
+    void add(unordered_map<int, int> &A, unordered_map<int, int> &B) {
+        for (auto it: B) A[it.first] += it.second;
+    }
+
+    string ___tmp___;
+    void _inRange(TrieNode *cur, const string &left, const string &right, int id, bool okLeft, bool okRight, RESULT_MAP &res) {
+        if (id == 10) {
+            auto cntFile = cur -> file;
+            string yoyo = ___tmp___;
+            int p = yoyo[0] == '$' ? 1 : 0;
+            while (yoyo[p] == '0') yoyo.erase(yoyo.begin() + p);
+            for (auto it : cntFile) {
+                res[it.first][yoyo] += it.second;
+            }
+            return;
+        } 
+        if (left[id] == '$') {
+            assert(right[id] == '$');
+            if (!cur -> child[_('$')]) return;
+            ___tmp___ += '$';
+            _inRange(cur -> child[_('$')], left, right, id+1, okLeft, okRight, res);
+            ___tmp___.pop_back();
+        }
+        for (char c = '0'; c <= '9'; c++) {
+            if (!cur -> child[_(c)]) continue;
+            bool nOkLeft = okLeft, nOkRight = okRight;
+            if (okLeft || c >= left[id]) {
+                if (c > left[id]) nOkLeft = true;
+            } else continue;
+            if (okRight || c <= right[id]) {
+                if (c < right[id]) nOkRight = true;
+            } else continue;
+            ___tmp___ += c;
+            _inRange(cur -> child[_(c)], left, right, id+1, nOkLeft, nOkRight, res);
+            ___tmp___.pop_back();
+        }
+    }
+
     inline unordered_map<int, int> _search(TrieNode *cur, const string &s)
     {
         unordered_map<int, int> ZERO;
@@ -83,12 +124,37 @@ public:
 
     inline void insert(const string &s, int idFile)
     {
-        _insert(root, s, idFile);
+        string t = s;
+        if (t[0] == '$' || isdigit(t[0])) {
+            int p = t[0] == '$' ? 1 : 0;
+            while (t.size() < 10) t.insert(p, "0");
+        }
+        _insert(root, t, idFile);
     }
 
     inline unordered_map<int, int> search(const string &s)
     {
-        return _search(root, s);
+        string t = s;
+        if (t[0] == '$' || isdigit(t[0])) {
+            int p = t[0] == '$' ? 1 : 0;
+            while (t.size() < 10) t.insert(p, "0");
+        }
+        return _search(root, t);
+    }
+
+    void inRange(const string &left, const string &right, RESULT_MAP &res) {
+        string _left = left;
+        if (_left[0] == '$' || isdigit(_left[0])) {
+            int p = _left[0] == '$' ? 1 : 0;
+            while (_left.size() < 10) _left.insert(p, "0");
+        }
+        string _right = right;
+        if (_right[0] == '$' || isdigit(_right[0])) {
+            int p = _right[0] == '$' ? 1 : 0;
+            while (_right.size() < 10) _right.insert(p, "0");
+        }
+        cout << " hehe " <<  _left << ' ' << _right << '\n';
+        _inRange(root, _left, _right, 0, 0, 0, res);
     }
 
     ~TRIE() { destroy(root); }

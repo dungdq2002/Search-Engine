@@ -73,10 +73,6 @@ void clean(string &s)
         t += c;
     }
     s = t;
-    if (s[0] == '$' || isdigit(s[0])) {
-        int p = s[0] == '$' ? 1 : 0;
-        while (s.size() < 10) s.insert(p, "0");
-    }
     if (__stopword__.find(s) != __stopword__.end())
         s = NONE;
 }
@@ -142,10 +138,6 @@ vector<string> splitInput(const string &inputStr)
                 if (endPos == string::npos)
                 {
                     result.emplace_back(tempStr);
-                    for (int i = 0; i < result.size(); ++i)
-                        for (int j = 0; j < result[i].length(); ++j)
-                            if (result[i][j] == ' ')
-                                result[i][j] = '1';
                     return result;
                 }
 
