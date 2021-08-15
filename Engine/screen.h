@@ -8,10 +8,12 @@
 #include <windows.h>
 #include <cstdlib>
 #include <fstream>
+#include <chrono>
 #include "read.h"
 #include "operator.h"
 #include "normalize.h"
 using namespace std;
+using namespace std::chrono;
 
 COORD cursorPosition;
 HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -325,7 +327,12 @@ void searchBox(TRIE &trie, SYNONYM_DATA &synonymData, vector<vector<string>> &fi
             cout << " Searching ... " << curSearch << '\n';
             Trie.insert(curSearch);
             historyFile << curSearch << '\n';
+            auto start = high_resolution_clock::now();
             auto res = handleInput(curSearch, trie, synonymData, fileData, fileName);
+            auto finish = high_resolution_clock::now();
+            auto duration = duration_cast<microseconds>(finish - start);
+            cout << " Found " << 
+            cout << duration.count() << " microseconds.\n";
             // exit(0);
             print5BestResult_highlight(res, fileData, fileName);
             // searching(curSearch);

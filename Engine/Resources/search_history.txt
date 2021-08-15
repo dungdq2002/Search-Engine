@@ -83,3 +83,62 @@ west * piracy
 $100
 intitle:port 
 filetype:txt west * piracy
+year
+hunt * betrayal
+new AND year
+"new year"
+attacks
+attacks
+72
+attacks
+72
+72
+hunt * betrayal
+hunt
+"hunt"
+"new year"
+"two layers"
+hunt * betrayal
+hunt * betrayal
+hunt * betrayal
+hunt * betrayal
+hunt * betrayal
+hunt * betrayal
+hunt * betrayal
+hunt * betrayal
+hunt * betrayal
+"acknowledged that"
+"
+"west piracy"
+west * piracy
+solution
+solutions
+filetype:txt west * piracy
+filetype:in west * pivacy
+filetype:in west * piracy
+intitle:port 
+10
+72
+1..100
+new -year
+new +year
+new -year
+1..100
+1..100
+1..100
+1..10000000
+$1..$100000
+$1..$100
+$1
+$1..$100
+$1..$100
+hunt * betrayal
+Long
+porn AND child
+child
+children
+solutions
+solution
+porn AND child
+$1..$100000
+1..10000000
