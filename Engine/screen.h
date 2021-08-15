@@ -331,7 +331,7 @@ void searchBox(TRIE &trie, SYNONYM_DATA &synonymData, vector<vector<string>> &fi
             auto res = handleInput(curSearch, trie, synonymData, fileData, fileName);
             auto finish = high_resolution_clock::now();
             auto duration = duration_cast<microseconds>(finish - start);
-            cout << " Found " << 
+            cout << " Found " << res.size() << " results in ";
             cout << duration.count() << " microseconds.\n";
             // exit(0);
             print5BestResult_highlight(res, fileData, fileName);

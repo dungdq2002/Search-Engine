@@ -10,7 +10,9 @@
 #include <sstream>
 #include <iostream>
 #include <filesystem>
+#include <chrono>
 using namespace std;
+using namespace std::chrono;
 namespace fs = filesystem;
 
 struct SYNONYM_DATA
@@ -69,8 +71,13 @@ void importFile(TRIE &Trie, string folder, vector<string> &fileName, vector<vect
 {
     auto path = fs::current_path();
     path += "\\" + folder;
+    auto start = high_resolution_clock::now();
+    int t = 0;
+    int tmp1 = 2818, tmp2 = 5636, tmp3 = 8454, tmp4 = 11271;
     for (const auto &file : fs::directory_iterator(path))
     {
+        t++;
+        auto stop = high_resolution_clock::now();
         // File name
         string _fileName = fs::path(file).filename().string();
         fileName.push_back(_fileName);
@@ -90,6 +97,22 @@ void importFile(TRIE &Trie, string folder, vector<string> &fileName, vector<vect
             }
         }
         fileData.push_back(_fileData);
+        if (t == tmp1) {
+            auto duration = duration_cast<milliseconds> (stop - start);
+            cout << "Phase 1: " << tmp1 << " files -> " << duration.count() << " ms.\n";
+        }
+        if (t == tmp2) {
+            auto duration = duration_cast<milliseconds> (stop - start);
+            cout << "Phase 2: " << tmp2 << " files -> " << duration.count() << " ms.\n";
+        }
+        if (t == tmp3) {
+            auto duration = duration_cast<milliseconds> (stop - start);
+            cout << "Phase 3: " << tmp3 << " files -> " << duration.count() << " ms.\n";
+        }
+        if (t == tmp4) {
+            auto duration = duration_cast<milliseconds> (stop - start);
+            cout << "Phase 4: " << tmp4 << " files -> " << duration.count() << " ms.\n";
+        }
     }
 }
 

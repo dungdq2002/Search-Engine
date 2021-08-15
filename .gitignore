@@ -39,3 +39,5 @@ test.cpp
 *.DS_Store
 
 Search Engine-Data/
+small-data/
+large-data/

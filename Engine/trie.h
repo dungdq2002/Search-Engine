@@ -153,7 +153,6 @@ public:
             int p = _right[0] == '$' ? 1 : 0;
             while (_right.size() < 10) _right.insert(p, "0");
         }
-        cout << " hehe " <<  _left << ' ' << _right << '\n';
         _inRange(root, _left, _right, 0, 0, 0, res);
     }
 

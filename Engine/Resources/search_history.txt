@@ -142,3 +142,15 @@ solution
 porn AND child
 $1..$100000
 1..10000000
+hello
+solution
+1..10000000
+100..200
+apple
+samsung
+#news
+news
+pros
+sound
+docked
+$1..$100000

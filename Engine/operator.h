@@ -251,7 +251,6 @@ RESULT_MAP handleInput(const string &inputStr, TRIE &trie, SYNONYM_DATA &synonym
             int pos = word.find_first_of("..");
             string left = word.substr(0, pos);
             string right = word.substr(pos+2, word.size() - (pos + 2));
-            cout << left << ' ' << right << '\n';
             // clean(left), clean(right);
             trie.inRange(left, right, pharseMap);
             if (currentOperator == "" || currentOperator == "OR") {
