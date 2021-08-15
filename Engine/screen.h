@@ -80,8 +80,11 @@ void printSpecial(string s)
     SetConsoleTextAttribute(console, 15);
 }
 
-void print5BestResult_highlight(RESULT_MAP &resultMap, vector<vector<string>> &fileData, vector<string> &fileName)
+
+bool ___pause___;
+void print5BestResult_highlight(RESULT_MAP &resultMap, vector<vector<string>> &fileData, vector<string> &fileName, string &folder)
 {
+    ___pause___ = false;
     vector<RESULT_PAIR> resultVector;
     for (RESULT_PAIR resultPair : resultMap)
         resultVector.push_back(resultPair);
@@ -89,10 +92,13 @@ void print5BestResult_highlight(RESULT_MAP &resultMap, vector<vector<string>> &f
     if (resultVector.empty())
     {
         cout << "Not found!\n";
+        ___pause___ = true;
+        system("pause");
         return;
     }
 
     sort(resultVector.begin(), resultVector.end(), isBetterResult);
+    resultVector.resize(min(5, (int)resultVector.size()));
 
     cout << '\n';
 
@@ -212,7 +218,6 @@ void print5BestResult_highlight(RESULT_MAP &resultMap, vector<vector<string>> &f
 
         if (tao_da_tim_ra == em_dang_cam_data_ne.end())
         {
-
             for (auto it : huhu)
             {
                 vector<string>::iterator tim_thay_roi = find(em_dang_cam_data_ne.begin(), em_dang_cam_data_ne.end(), it.first);
@@ -255,9 +260,45 @@ void print5BestResult_highlight(RESULT_MAP &resultMap, vector<vector<string>> &f
         cout << '\n';
         cout << "----------------------------------------------------\n\n";
     }
+
+    cout << "ESC to exit, from 1 to " << resultVector.size() << " to read the data file.\n";
+    int z;
+    while (true) {
+        z = getKey();
+        if (z == ESC) { ___pause___ = true; return; }
+        if ('1' <= z && z <= resultVector.size() + '0') break;
+    }
+    
+    z = int(z - '1');
+    
+    system("cls");
+    ifstream inp(folder + "\\" + fileName[resultVector[z].first]);
+    if (inp) {
+        printSpecial(fileName[resultVector[z].first]);
+        cout << '\n';
+        for (string s; getline(inp, s); ) {
+            for (int i = 0; i < s.size(); ) {
+                if (0 <= s[i] && s[i] <= 255) {
+                    cout << s[i];
+                    i++;
+                }
+                else {
+                    if (i + 3 > s.size()) break;
+                    char a = s[i++], b = s[i++], c = s[i++];
+                    if (a == -30 && b == -128 && c == -108) cout << '-';
+                    else if (a == -30 && b == -128 && c == -100) cout << "''";
+                    else if (a == -30 && b == -128 && c == -99) cout << "''";
+                    else if (a == -30 && b == -128 && c == -103) cout << "'";
+                }
+            }
+            cout << '\n';
+        }
+    }
+    else cout << "BUG roi\n";
+    system("pause");
 }
 
-void searchBox(TRIE &trie, SYNONYM_DATA &synonymData, vector<vector<string>> &fileData, vector<string> &fileName)
+void searchBox(TRIE &trie, SYNONYM_DATA &synonymData, vector<vector<string>> &fileData, vector<string> &fileName, string& folder)
 // void searchBox()
 {
     ofstream historyFile("Resources/search_history.txt", ios::app);
@@ -323,20 +364,22 @@ void searchBox(TRIE &trie, SYNONYM_DATA &synonymData, vector<vector<string>> &fi
         }
         else if (key == ENTER)
         {
-            system("cls");
-            cout << " Searching ... " << curSearch << '\n';
             Trie.insert(curSearch);
             historyFile << curSearch << '\n';
             auto start = high_resolution_clock::now();
             auto res = handleInput(curSearch, trie, synonymData, fileData, fileName);
             auto finish = high_resolution_clock::now();
             auto duration = duration_cast<microseconds>(finish - start);
-            cout << " Found " << res.size() << " results in ";
-            cout << duration.count() << " microseconds.\n";
             // exit(0);
-            print5BestResult_highlight(res, fileData, fileName);
+            while(true) {
+                system("cls");
+                cout << " Searching ... " << curSearch << '\n';
+                cout << " Found " << res.size() << " results in ";
+                cout << duration.count() << " microseconds.\n";
+                print5BestResult_highlight(res, fileData, fileName, folder);
+                if (___pause___) break;
+            }
             // searching(curSearch);
-            system("pause");
             system("cls");
         }
         else if (key == BACKSPACE)

@@ -5,6 +5,7 @@
 #include <string>
 #include <cctype>
 #include <cassert>
+#include <fstream>
 #include <iostream>
 #include <algorithm>
 #include <unordered_map>
@@ -27,6 +28,15 @@ int _(char c)
         return c - 'a' + 13;
     return 39;
     assert(false);
+}
+
+char __(int c) {
+    if (c == 0) return '-';
+    if (c == 1) return '$';
+    if (c == 2) return '#';
+    if (12 >= c) return char(c + '0' - 3);
+    if (38 >= c) return char(c + 'a' - 13);
+    return '@';
 }
 
 #define __MAXCHAR 40
@@ -56,6 +66,18 @@ private:
             cur = cur->child[_c];
         }
         cur->file[idFile]++;
+    }
+
+    inline void _insert(TrieNode *cur, const string &s, unordered_map <int, int> &um)
+    {
+        for (char c : s)
+        {
+            int _c = _(c);
+            if (!cur->child[_c])
+                cur->child[_c] = new TrieNode();
+            cur = cur->child[_c];
+        }
+        cur -> file = um;
     }
 
     void add(unordered_map<int, int> &A, unordered_map<int, int> &B) {
@@ -119,6 +141,23 @@ private:
         }
     }
 
+    string ___omg___;
+    void _saveTrie(TrieNode* cur, ofstream &out) {
+        if (cur -> file.size()) {
+            out << ___omg___ << ' ';
+            out << cur -> file.size() << ' ';
+            for (auto it : cur -> file) out << it.first << ' ' << it.second << ' ';
+            out << '\n';
+        }
+        for (int i = 0; i < 40; i++) {
+            if (cur -> child[i]) {
+                ___omg___ += __(i);
+                _saveTrie(cur -> child[i], out);
+                ___omg___.pop_back();
+            }
+        }
+    }
+
 public:
     TRIE() { root = new TrieNode(); }
 
@@ -142,7 +181,7 @@ public:
         return _search(root, t);
     }
 
-    void inRange(const string &left, const string &right, RESULT_MAP &res) {
+    inline void inRange(const string &left, const string &right, RESULT_MAP &res) {
         string _left = left;
         if (_left[0] == '$' || isdigit(_left[0])) {
             int p = _left[0] == '$' ? 1 : 0;
@@ -154,6 +193,14 @@ public:
             while (_right.size() < 10) _right.insert(p, "0");
         }
         _inRange(root, _left, _right, 0, 0, 0, res);
+    }
+
+    inline void save(ofstream &out) {
+        _saveTrie(root, out);
+    }
+
+    inline void insert(const string& s, unordered_map <int, int> &um) {
+        _insert(root, s, um);
     }
 
     ~TRIE() { destroy(root); }
