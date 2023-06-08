@@ -1,4 +1,4 @@
-# Search Engine - CS163
+# Search Engine
 
 Sample Dataset: [here](https://drive.google.com/file/d/1fpCBh1ZhIrcx0v3htbpNunzTcmntBJuO/view?usp=sharing)
 
